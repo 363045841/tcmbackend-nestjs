@@ -17,7 +17,7 @@ import { medinfo } from './medinfo/medinfo.entity';
       () => {
         // 加载开发环境配置文件.env.development
         const config = dotenv.config({ path: 'D:\\Code\\tcmbackend\\tcmbackend\\.env.production' });
-        console.log('开始加载配置文件:', config);
+        // console.log('开始加载配置文件:', config);
         return config.parsed || {}; // 扁平化configservice键值结构
       },
     ],
@@ -31,8 +31,8 @@ import { medinfo } from './medinfo/medinfo.entity';
     imports: [ConfigModule],
     inject: [ConfigService],
     useFactory: (configService: ConfigService) => {
-      console.log("config:", configService);
-      console.log('开始配置数据库连接'); 
+      // console.log("config:", configService);
+      // console.log('开始配置数据库连接'); 
       const dbConfig = {
         type: configService.get('TYPEORM_TYPE'), 
         host: configService.get('TYPEORM_HOST'),
@@ -44,7 +44,7 @@ import { medinfo } from './medinfo/medinfo.entity';
         entities: [medinfo], // 实体类数组
         logging: ['error'],
       } as TypeOrmModuleOptions;
-      console.log('数据库配置完成:', dbConfig);
+      // console.log('数据库配置完成:', dbConfig);
       return dbConfig;
     },
   })],

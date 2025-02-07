@@ -6,7 +6,8 @@ declare const module: any;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix("api/v1");
-  await app.listen(process.env.PORT ?? 3000);
+  app.enableCors();
+  await app.listen(process.env.PORT ?? 3001);
 
   if (module.hot) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
