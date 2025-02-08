@@ -7,6 +7,7 @@ import * as dotenv from 'dotenv';
 import * as Joi from 'joi'
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { medinfo } from './medinfo/medinfo.entity';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [MedinfoModule,ConfigModule.forRoot({
@@ -47,7 +48,7 @@ import { medinfo } from './medinfo/medinfo.entity';
       // console.log('数据库配置完成:', dbConfig);
       return dbConfig;
     },
-  })],
+  }), SearchModule],
   controllers: [AppController,],
   providers: [AppService],
 })
