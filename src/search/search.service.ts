@@ -22,26 +22,33 @@ export class SearchService {
   async fuzzySearch(query: string) {
     try {
       let queryWords: string[] = [];
+
+      // 调用 Python 脚本获取聚类簇中的单词列表
       const result = await this.getClusterWords(query);
+
 
       if ('error' in result) {
         // 找不到聚类簇,直接返回,置空处理给前端
         return (result as fuzzySearchClusterErrorRes).error;
       } else {
         queryWords = (result as fuzzySearchClusterSuccessRes).words;
-        const records = await this.getWordRecordByQuery(queryWords[0]);
-        console.log(records);
-        return records;
+        let index = queryWords.indexOf(query);
+        queryWords.splice(index, 1);
+        queryWords.unshift(query);
+        let results: IndexTable[] = [];
+        for (let word of queryWords) {
+          results.push(...(await this.getWordRecordByQuery(word)));
+        }
+        //const records = await this.getWordRecordByQuery(queryWords[0]);
+        console.log(results);
+        return results.splice(0, 10);// WARN: 暂时只返回前10个结果,后续可以考虑优化此处逻辑收窄模糊搜搜范围!!!
       }
-
-      
     } catch (error) {
       console.error('Error during fuzzy search:', error);
       // 这里可以根据需要返回一个错误响应，例如：
       return { error: 'An error occurred while performing the search.' };
     }
   }
-  
 
   getClusterWords(
     query: string,
