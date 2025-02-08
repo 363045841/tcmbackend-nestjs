@@ -8,6 +8,7 @@ import * as Joi from 'joi'
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { medinfo } from './medinfo/medinfo.entity';
 import { SearchModule } from './search/search.module';
+import { IndexTable } from './search/IndexTable.entity';
 
 @Module({
   imports: [MedinfoModule,ConfigModule.forRoot({
@@ -42,7 +43,7 @@ import { SearchModule } from './search/search.module';
         password: configService.get('TYPEORM_PASSWORD'),
         database: configService.get('TYPEORM_DATABASE'),
         synchronize: true,
-        entities: [medinfo], // 实体类数组
+        entities: [medinfo,IndexTable], // 实体类数组
         logging: ['error'],
       } as TypeOrmModuleOptions;
       // console.log('数据库配置完成:', dbConfig);

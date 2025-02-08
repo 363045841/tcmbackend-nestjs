@@ -13,4 +13,9 @@ export class MedinfoController {
   getPage(@Param('id') id: number) {
     return this.medinfoService.getPage(id)
   }
+
+  @Get('length')
+  getMedinfoTableLength() {
+    return this.medinfoService.getMedinfoTableLength()
+  }
 }

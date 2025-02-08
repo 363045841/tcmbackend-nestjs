@@ -1,5 +1,14 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { SearchService } from './search.service';
+import { error } from 'console';
+
+export interface fuzzySearchClusterErrorRes {
+  error: string;
+}
+export interface fuzzySearchClusterSuccessRes {
+  cluster: number;
+  words: string[];
+}
 
 @Controller('search')
 export class SearchController {
@@ -7,6 +16,7 @@ export class SearchController {
 
   @Get()
   async searchByWord2Vec(@Query('wd') word: string) {
-    return await this.searchService.fuzzySearch(word);
+    let a = await this.searchService.fuzzySearch(word);
+    return a;
   }
 }

@@ -12,4 +12,7 @@ export class MedinfoService {
   async getPage(id: number) {
     return await this.medinfoRepository.findOne({ where: { id } });
   }
+  async getMedinfoTableLength() {
+    return await this.medinfoRepository.count();
+  }
 }
