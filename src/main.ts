@@ -8,6 +8,7 @@ async function bootstrap() {
   app.setGlobalPrefix("api/v1");
   app.enableCors();
   await app.listen(process.env.PORT ?? 3001);
+  console.log(`Server is running on port ${process.env.PORT ?? 3001}`);
 
   if (module.hot) {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
