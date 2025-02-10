@@ -58,8 +58,8 @@ export class SearchService {
         let results_with_only_index: IndexTable[] = [];
 
         //得到去重后的indexValue数组,即去重后的词条索引!
-        for(let i = 1;i < results.length;i++) {
-          if(results[i].indexValue === results[i - 1].indexValue) {
+        for (let i = 1; i < results.length; i++) {
+          if (results[i].indexValue === results[i - 1].indexValue) {
             continue;
           } else {
             results_with_only_index.push(results[i]);
@@ -70,7 +70,9 @@ export class SearchService {
 
         for (let res of results_with_only_index.splice(0, 10)) {
           // WARN: 暂时只返回前10个结果,后续可以考虑优化此处逻辑收窄模糊搜索范围!!!
-          const record: medinfo | null = await this.getMedInfoByIndex(res.indexValue);
+          const record: medinfo | null = await this.getMedInfoByIndex(
+            res.indexValue,
+          );
           if (record === null) {
             return { error: '找不到对应的药材信息' };
           } else {
@@ -119,14 +121,12 @@ export class SearchService {
     });
   }
 
-  // 
+  //
   async getWordRecordIndexByQuery(query: string) {
     return await this.indexTableRepository.find({ where: { word: query } });
   }
 
   async getMedInfoByIndex(index: number) {
-    return await this.medinfoRepository.findOneBy(
-      { id: index },
-    );// 通过indexValue获取药材信息
+    return await this.medinfoRepository.findOneBy({ id: index }); // 通过indexValue获取药材信息
   }
 }
