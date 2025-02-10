@@ -11,12 +11,12 @@ import {
    "description" : “匹配文本段落”,
    “picUrl”: "http:// ...", */
 export interface fuzzySearchFinalRes {
-  id?: number;
-  word: string;
-  indexValue: number;
-  title: string;
-  description: string;
-  picUrl: string;
+  id?: number; 
+  word: string; // 搜索词
+  indexValue: number; 
+  title: string; // 药材名称
+  description: string; // 药材描述
+  picUrl: string; // 药材图片链接
 }
 
 @Controller('search')

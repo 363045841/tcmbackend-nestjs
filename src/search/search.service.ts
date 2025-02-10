@@ -18,6 +18,13 @@ export interface fuzzySearchClusterSuccessRes {
   words: string[];
 }
 
+interface fuzzySearchAnsPre {
+  pic: string;
+  tcmName: string;
+  id: number;
+  description: string;
+}
+
 @Injectable()
 export class SearchService {
   constructor(
@@ -53,9 +60,12 @@ export class SearchService {
           
           results.push(...(await this.getWordRecordIndexByQuery(word)));
         } */
-       // 获取词条索引(改并发)
-        results = (await Promise.all(queryWords.map((word) => this.getWordRecordIndexByQuery(word)))).flat();
-
+        // 获取词条索引(改并发)
+        results = (
+          await Promise.all(
+            queryWords.map((word) => this.getWordRecordIndexByQuery(word)),
+          )
+        ).flat();
 
         console.timeEnd('getWordRecordIndexByQuery');
 
@@ -79,14 +89,18 @@ export class SearchService {
 
         // 插桩：获取药材信息的性能监控
         console.time('getMedInfoByIndex');
-        const records:(medinfo | null)[] = await Promise.all(results_with_only_index.splice(0, 10).map((res) => this.getMedInfoByIndex(res.indexValue)));
-        for(let record of records){
-          if(record === null) {
+        const records: (fuzzySearchAnsPre | null)[] = await Promise.all(
+          results_with_only_index
+            .splice(0, 10)
+            .map((res) => this.getMedInfoByIndex(res.indexValue)),
+        );
+        for (let record of records) {
+          if (record === null) {
             continue;
           } else {
             finalRes.push({
               id: record.id,
-              word: record.tcmName ?? '未知药材',
+              word: query ?? '未知药材',
               indexValue: record.id,
               title: record.tcmName ?? '未知药材',
               description: record.description ?? '暂无描述',
@@ -127,7 +141,10 @@ export class SearchService {
   ): Promise<fuzzySearchClusterErrorRes | fuzzySearchClusterSuccessRes> {
     return new Promise((resolve, reject) => {
       console.log(__dirname);
-      const process = spawn('python', [path.join(__dirname,'./word2vec.py'), query]);
+      const process = spawn('python', [
+        path.join(__dirname, './word2vec.py'),
+        query,
+      ]);
 
       let output = '';
 
@@ -187,8 +204,13 @@ export class SearchService {
   // 插桩：获取药材信息的性能监控
   async getMedInfoByIndex(index: number) {
     console.time(`获取页面数据: ${index}`);
-    const result = await this.medinfoRepository.findOneBy({ id: index });
+    //const result = await this.medinfoRepository.findOneBy({ id: index });
+
+    const result: fuzzySearchAnsPre[] = await this.medinfoRepository.query(
+      `SELECT pic, tcmName, id, description FROM data_with_header_final WHERE id = ?`,
+      [index],
+    );
     console.timeEnd(`获取页面数据: ${index}`);
-    return result;
+    return result[0] ?? null; // 取数组第一项，避免 undefined
   }
 }
