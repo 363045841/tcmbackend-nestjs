@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { medinfo } from '../medinfo/medinfo.entity';
 import { fuzzySearchFinalRes } from './search.controller';
+import { Word } from './Word.entity';
+import { WordIndex } from './WordIndex.entity';
 
 export interface fuzzySearchClusterErrorRes {
   error: string;
@@ -22,6 +24,10 @@ export class SearchService {
     private readonly indexTableRepository: Repository<IndexTable>,
     @InjectRepository(medinfo)
     private readonly medinfoRepository: Repository<medinfo>,
+    @InjectRepository(Word)
+    private readonly wordRepository: Repository<Word>,
+    @InjectRepository(WordIndex)
+    private readonly wordIndexRepository: Repository<WordIndex>,
   ) {}
 
   private readonly pythonPath = 'python'; // 确保 Python 3 可用
@@ -68,7 +74,9 @@ export class SearchService {
         // 插桩：获取药材信息的性能监控
         console.time('getMedInfoByIndex');
         for (let res of results_with_only_index.splice(0, 10)) {
-          const record: medinfo | null = await this.getMedInfoByIndex(res.indexValue);
+          const record: medinfo | null = await this.getMedInfoByIndex(
+            res.indexValue,
+          );
           if (record === null) {
             return { error: '找不到对应的药材信息' };
           } else {
@@ -118,11 +126,38 @@ export class SearchService {
   }
 
   // 插桩：获取索引的性能监控
-  async getWordRecordIndexByQuery(query: string) {
-    console.time(`搜索索引: ${query}`);
-    const result = await this.indexTableRepository.find({ where: { word: query } });
-    console.timeEnd(`搜索索引: ${query}`);
-    return result;
+  async getWordRecordIndexByQuery(query: string): Promise<IndexTable[]> {
+    // 原始接口，性能较差
+    /* console.time(`搜索索引: ${query}`);
+    const result: IndexTable[] = await this.indexTableRepository.find({
+      where: { word: query },
+    });
+    console.timeEnd(`搜索索引: ${query}`); */
+    /* const result_prefer = await this.wordIndexRepository
+      .createQueryBuilder('word_index') // 给 word_index 设置别名
+      .innerJoin('word', 'word', 'word.id = word_index.word_id') // 连接 word 表
+      .where('word.word = :query', { query }) // 过滤条件
+      .select('word_index.indexValue', 'index_value') // 映射正确的列名
+      .getMany(); */
+
+    interface result_prefer_pre {
+      indexValue: number;
+    }
+    console.time('优化索引');
+    const result_prefer: result_prefer_pre[] =
+      await this.wordIndexRepository.query(
+        `SELECT word_index.index_value AS indexValue
+       FROM word_index
+       INNER JOIN word ON word.id = word_index.word_id
+       WHERE word.word = ?`,
+        [query],
+      );
+    const result_prefer_final: IndexTable[] = result_prefer.map(
+      (item) => ({ ...item, word: query, id: 1 }), // 重构记着把id去掉,Omit派生数据库接口类型!
+    );
+    console.timeEnd('优化索引');
+    //console.log(result);
+    return result_prefer_final;
   }
 
   // 插桩：获取药材信息的性能监控
