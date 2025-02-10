@@ -7,6 +7,7 @@ import { medinfo } from '../medinfo/medinfo.entity';
 import { fuzzySearchFinalRes } from './search.controller';
 import { Word } from './Word.entity';
 import { WordIndex } from './WordIndex.entity';
+import * as path from 'path';
 
 export interface fuzzySearchClusterErrorRes {
   error: string;
@@ -125,7 +126,8 @@ export class SearchService {
     query: string,
   ): Promise<fuzzySearchClusterErrorRes | fuzzySearchClusterSuccessRes> {
     return new Promise((resolve, reject) => {
-      const process = spawn('python', ['src\\search\\word2vec.py', query]);
+      console.log(__dirname);
+      const process = spawn('python', [path.join(__dirname,'./word2vec.py'), query]);
 
       let output = '';
 

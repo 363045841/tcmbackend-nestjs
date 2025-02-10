@@ -3,7 +3,19 @@ import pandas as pd
 import json
 
 # 读取 CSV 文件（假设 CSV 文件名为 clusters.csv）
-df = pd.read_csv("src\\search\\kmeans_clusters_v19.csv")  # x, y, word, cluster
+""" df = pd.read_csv("src\\search\\kmeans_clusters_v19.csv")  # x, y, word, cluster """
+from pathlib import Path
+import pandas as pd
+
+# 获取当前 Python 文件所在目录
+base_dir = Path(__file__).parent
+
+# 拼接路径（跨平台适用）
+csv_path = base_dir / "kmeans_clusters_v19.csv"
+
+# 读取 CSV 文件
+df = pd.read_csv(csv_path)
+
 
 def get_cluster_words(query_word):
     # 查找 query_word 所属的 cluster

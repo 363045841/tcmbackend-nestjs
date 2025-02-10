@@ -39,7 +39,7 @@ import { WordIndex } from './search/WordIndex.entity';
       // console.log("config:", configService);
       // console.log('开始配置数据库连接'); 
       const dbConfig = {
-        type: configService.get('TYPEORM_TYPE'), 
+        type: "mysql", 
         host: configService.get('TYPEORM_HOST'),
         port: configService.get('TYPEORM_PORT'),
         username: configService.get('TYPEORM_USERNAME'),
