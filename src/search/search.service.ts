@@ -48,9 +48,14 @@ export class SearchService {
 
         // 插桩：获取词条索引的性能监控
         console.time('getWordRecordIndexByQuery');
-        for (let word of queryWords) {
+        /* for (let word of queryWords) {
+          
           results.push(...(await this.getWordRecordIndexByQuery(word)));
-        }
+        } */
+       // 获取词条索引(改并发)
+        results = (await Promise.all(queryWords.map((word) => this.getWordRecordIndexByQuery(word)))).flat();
+
+
         console.timeEnd('getWordRecordIndexByQuery');
 
         results.sort((a, b) => {
@@ -73,10 +78,27 @@ export class SearchService {
 
         // 插桩：获取药材信息的性能监控
         console.time('getMedInfoByIndex');
-        for (let res of results_with_only_index.splice(0, 10)) {
+        const records:(medinfo | null)[] = await Promise.all(results_with_only_index.splice(0, 10).map((res) => this.getMedInfoByIndex(res.indexValue)));
+        for(let record of records){
+          if(record === null) {
+            continue;
+          } else {
+            finalRes.push({
+              id: record.id,
+              word: record.tcmName ?? '未知药材',
+              indexValue: record.id,
+              title: record.tcmName ?? '未知药材',
+              description: record.description ?? '暂无描述',
+              picUrl: record.pic ?? '',
+            });
+          }
+        }
+        /* for (let res of results_with_only_index.splice(0, 10)) {
+          // 获取页面数据(改并发)
           const record: medinfo | null = await this.getMedInfoByIndex(
             res.indexValue,
           );
+          // const record: (medinfo | null)[] = await Promise.all(results_with_only_index.splice(0, 10).map((res) => this.getMedInfoByIndex(res.indexValue)).flat());
           if (record === null) {
             return { error: '找不到对应的药材信息' };
           } else {
@@ -89,7 +111,7 @@ export class SearchService {
               picUrl: record.pic ?? '',
             });
           }
-        }
+        } */
         console.timeEnd('getMedInfoByIndex');
         return finalRes;
       }
@@ -143,7 +165,7 @@ export class SearchService {
     interface result_prefer_pre {
       indexValue: number;
     }
-    console.time('优化索引');
+    console.time(`优化索引: ${query}`);
     const result_prefer: result_prefer_pre[] =
       await this.wordIndexRepository.query(
         `SELECT word_index.index_value AS indexValue
@@ -155,7 +177,7 @@ export class SearchService {
     const result_prefer_final: IndexTable[] = result_prefer.map(
       (item) => ({ ...item, word: query, id: 1 }), // 重构记着把id去掉,Omit派生数据库接口类型!
     );
-    console.timeEnd('优化索引');
+    console.timeEnd(`优化索引: ${query}`);
     //console.log(result);
     return result_prefer_final;
   }
