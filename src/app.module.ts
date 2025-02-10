@@ -9,6 +9,7 @@ import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { medinfo } from './medinfo/medinfo.entity';
 import { SearchModule } from './search/search.module';
 import { IndexTable } from './search/IndexTable.entity';
+import * as path from 'path';
 
 @Module({
   imports: [MedinfoModule,ConfigModule.forRoot({
@@ -17,8 +18,8 @@ import { IndexTable } from './search/IndexTable.entity';
     isGlobal: true,
     load: [
       () => {
-        // 加载开发环境配置文件.env.development
-        const config = dotenv.config({ path: 'D:\\Code\\tcmbackend\\tcmbackend\\.env.production' });
+        // 加载环境变量文件
+        const config = dotenv.config({ path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`) });
         // console.log('开始加载配置文件:', config);
         return config.parsed || {}; // 扁平化configservice键值结构
       },
