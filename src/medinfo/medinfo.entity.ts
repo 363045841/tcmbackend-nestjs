@@ -1,10 +1,28 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
 
+@Index(
+  "idx_fulltext_all",
+  [
+    "tcmName",
+    "alias",
+    "enName",
+    "source",
+    "shape",
+    "distribution",
+    "process",
+    "description",
+    "effect",
+    "class",
+    "application",
+    "component",
+    "research",
+    "note",
+    "prescription",
+  ],
+  { fulltext: true }
+)
 @Entity("data_with_header_final", { schema: "tcm" })
 export class medinfo {
-  @Column("text", { name: "pic", nullable: true })
-  pic: string | null;
-
   @Column("varchar", { name: "tcmName", nullable: true, length: 30 })
   tcmName: string | null;
 
@@ -13,6 +31,12 @@ export class medinfo {
 
   @Column("varchar", { name: "enName", nullable: true, length: 90 })
   enName: string | null;
+
+  @PrimaryGeneratedColumn({ type: "int", name: "id" })
+  id: number;
+
+  @Column("text", { name: "pic", nullable: true })
+  pic: string | null;
 
   @Column("text", { name: "source", nullable: true })
   source: string | null;
@@ -49,7 +73,4 @@ export class medinfo {
 
   @Column("text", { name: "prescription", nullable: true })
   prescription: string | null;
-
-  @PrimaryGeneratedColumn({ type: "int", name: "id" })
-  id: number;
 }

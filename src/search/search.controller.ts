@@ -30,20 +30,24 @@ export class SearchController {
 
   @Get()
   async searchByWord2Vec(@Query('wd') word: string) {
+
+    
     // 并发
-    console.time('并发精准+模糊');
-    let [fuzzySearchRes, accurateSearchRes]: [
+    console.time('并发精准名称+模糊+精准全文');
+    let [fuzzySearchRes, /* accurateNameSearchRes, */ accurateSearchRes]: [
       SearchFinalRes[] | fuzzySearchClusterErrorRes,
+      /* SearchFinalRes[], */
       SearchFinalRes[],
     ] = await Promise.all([
       this.searchService.fuzzySearch(word),
-      this.accurateSearchService.findMedinfoByName(word),
+      /* this.accurateSearchService.findMedinfoByName(word), */
+      this.accurateSearchService.findMedinfoInAllFields(word),
     ]);
 
     // let fuzzySearchRes:SearchFinalRes[] | fuzzySearchClusterErrorRes = await this.searchService.fuzzySearch(word);
     // let accurateSearchRes: SearchFinalRes[] = await this.accurateSearchService.findMedinfoByName(word);
     if (!('error' in fuzzySearchRes)) {
-      console.timeEnd('并发精准+模糊');
+      console.timeEnd('并发精准名称+模糊+精准全文');
       return [...accurateSearchRes, ...fuzzySearchRes];
     } else {
       return [];
