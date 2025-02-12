@@ -14,7 +14,6 @@ export interface fuzzySearchClusterErrorRes {
 }
 
 export interface fuzzySearchClusterSuccessRes {
-  cluster: number;
   words: string[];
 }
 
@@ -40,34 +39,33 @@ export class FuzzySearchService {
 
   private readonly pythonPath = 'python'; // 确保 Python 3 可用
 
-  async fuzzySearch(query: string) {
+  async fuzzySearch(query: string): Promise<fuzzySearchClusterSuccessRes | fuzzySearchClusterErrorRes> {
     try {
-      let queryWords: string[] = [];
+      let queryWords: fuzzySearchClusterSuccessRes = { words: [] };
 
       const result = await this.getClusterWords(query);
+      console.log(result);
       if ('error' in result) {
         return result as fuzzySearchClusterErrorRes;
       } else {
-        queryWords = (result as fuzzySearchClusterSuccessRes).words;
-        let index = queryWords.indexOf(query);
+        queryWords.words = (result as fuzzySearchClusterSuccessRes).words;
+        let index = queryWords.words.indexOf(query);
+        queryWords.words.splice(index, 1);
+        return queryWords;
+        /* let index = queryWords.indexOf(query);
         queryWords.splice(index, 1);
         queryWords.unshift(query);
         let results: IndexTable[] = [];
 
         // 插桩：获取词条索引的性能监控
-        console.time('getWordRecordIndexByQuery');
-        /* for (let word of queryWords) {
-          
-          results.push(...(await this.getWordRecordIndexByQuery(word)));
-        } */
-        // 获取词条索引(改并发)
+        //- console.time('getWordRecordIndexByQuery');
         results = (
           await Promise.all(
             queryWords.map((word) => this.getWordRecordIndexByQuery(word)),
           )
         ).flat();
 
-        console.timeEnd('getWordRecordIndexByQuery');
+        //- console.timeEnd('getWordRecordIndexByQuery');
 
         results.sort((a, b) => {
           if (a.indexValue !== b.indexValue) {
@@ -88,7 +86,7 @@ export class FuzzySearchService {
         let finalRes: SearchFinalRes[] = [];
 
         // 插桩：获取药材信息的性能监控
-        console.time('getMedInfoByIndex');
+        //- console.time('getMedInfoByIndex');
         const records: (fuzzySearchAnsPre | null)[] = await Promise.all(
           results_with_only_index.splice(0, 10).map((res) => {
             return this.getMedInfoByIndex(res.indexValue);
@@ -109,30 +107,12 @@ export class FuzzySearchService {
             });
           }
         }
-        /* for (let res of results_with_only_index.splice(0, 10)) {
-          // 获取页面数据(改并发)
-          const record: medinfo | null = await this.getMedInfoByIndex(
-            res.indexValue,
-          );
-          // const record: (medinfo | null)[] = await Promise.all(results_with_only_index.splice(0, 10).map((res) => this.getMedInfoByIndex(res.indexValue)).flat());
-          if (record === null) {
-            return { error: '找不到对应的药材信息' };
-          } else {
-            finalRes.push({
-              id: res.id,
-              word: res.word,
-              indexValue: res.indexValue,
-              title: record.tcmName ?? '未知药材',
-              description: record.description ?? '暂无描述',
-              picUrl: record.pic ?? '',
-            });
-          }
-        } */
-        console.timeEnd('getMedInfoByIndex');
-        return finalRes;
+
+        //- console.timeEnd('getMedInfoByIndex');
+        return finalRes; */
       }
     } catch (error) {
-      console.error('Error during fuzzy search:', error);
+      //- console.error('Error during fuzzy search:', error);
       return { error: 'An error occurred while performing the search.' };
     }
   }
@@ -141,7 +121,7 @@ export class FuzzySearchService {
     query: string,
   ): Promise<fuzzySearchClusterErrorRes | fuzzySearchClusterSuccessRes> {
     return new Promise((resolve, reject) => {
-      console.log(__dirname);
+      //- console.log(__dirname);
       const process = spawn('python', [
         path.join(__dirname, './word2vec.py'),
         query,
@@ -154,7 +134,7 @@ export class FuzzySearchService {
       });
 
       process.stderr.on('data', (data) => {
-        console.error(`Error: ${data}`);
+        //- console.error(`Error: ${data}`);
       });
 
       process.on('close', (code) => {
@@ -169,23 +149,10 @@ export class FuzzySearchService {
 
   // 插桩：获取索引的性能监控
   async getWordRecordIndexByQuery(query: string): Promise<IndexTable[]> {
-    // 原始接口，性能较差
-    /* console.time(`搜索索引: ${query}`);
-    const result: IndexTable[] = await this.indexTableRepository.find({
-      where: { word: query },
-    });
-    console.timeEnd(`搜索索引: ${query}`); */
-    /* const result_prefer = await this.wordIndexRepository
-      .createQueryBuilder('word_index') // 给 word_index 设置别名
-      .innerJoin('word', 'word', 'word.id = word_index.word_id') // 连接 word 表
-      .where('word.word = :query', { query }) // 过滤条件
-      .select('word_index.indexValue', 'index_value') // 映射正确的列名
-      .getMany(); */
-
     interface result_prefer_pre {
       indexValue: number;
     }
-    console.time(`优化索引: ${query}`);
+    //- console.time(`优化索引: ${query}`);
     const result_prefer: result_prefer_pre[] =
       await this.wordIndexRepository.query(
         `SELECT word_index.index_value AS indexValue
@@ -197,21 +164,19 @@ export class FuzzySearchService {
     const result_prefer_final: IndexTable[] = result_prefer.map(
       (item) => ({ ...item, word: query, id: 1 }), // 重构记着把id去掉,Omit派生数据库接口类型!
     );
-    console.timeEnd(`优化索引: ${query}`);
-    //console.log(result);
+    //- console.timeEnd(`优化索引: ${query}`);
     return result_prefer_final;
   }
 
   // 插桩：获取药材信息的性能监控
   async getMedInfoByIndex(index: number) {
-    console.time(`获取页面数据: ${index}`);
-    //const result = await this.medinfoRepository.findOneBy({ id: index });
+    //- console.time(`获取页面数据: ${index}`);
 
     const result: fuzzySearchAnsPre[] = await this.medinfoRepository.query(
       `SELECT pic, tcmName, id, description FROM data_with_header_final WHERE id = ?`,
       [index],
     );
-    console.timeEnd(`获取页面数据: ${index}`);
+    //- console.timeEnd(`获取页面数据: ${index}`);
     return result[0] ?? null; // 取数组第一项，避免 undefined
   }
 }

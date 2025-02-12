@@ -14,7 +14,7 @@ export class AccurateSearchService {
    * @deprecated 此方法已弃用，请使用 findMedinfoInAllFields 替代
    */
   async findMedinfoByName(name: string): Promise<SearchFinalRes[]> {
-    console.time(`精准搜索: ${name}`);
+    //- console.time(`精准搜索: ${name}`);
     let records = await this.medinfoRepository.query(
       `SELECT pic, tcmName, id, description FROM data_with_header_final WHERE tcmName = ?`,
       [`${name}%`], // 在 name 前加上 % 用于模糊匹配
@@ -34,27 +34,35 @@ export class AccurateSearchService {
           isFuzzy: false,
         });
       }
-      console.timeEnd(`精准搜索: ${name}`);
+      //- console.timeEnd(`精准搜索: ${name}`);
       return finalRes;
     }
   }
 
   async findMedinfoInAllFields(query: string): Promise<SearchFinalRes[]> {
-    console.time(`精准搜索全文: ${query}`);
+    //- console.time(`精准搜索全文: ${query}`);
     /* let records = await this.medinfoRepository.query(
       `SELECT * FROM data_with_header_final 
        WHERE MATCH (prescription) AGAINST ('${query}' IN NATURAL LANGUAGE MODE);`,
     ); */
 
     const records = await this.medinfoRepository.query(
-      `SELECT pic, tcmName, id, description 
+      `SELECT pic, tcmName, id, description, 
+              MATCH (tcmName, alias, enName, source, shape, distribution, 
+                     process, description, effect, class, application, 
+                     component, research, note, prescription) 
+              AGAINST (? IN BOOLEAN MODE) AS relevance_score
        FROM data_with_header_final 
        WHERE MATCH (tcmName, alias, enName, source, shape, distribution, 
                     process, description, effect, class, application, 
                     component, research, note, prescription) 
-       AGAINST (? IN NATURAL LANGUAGE MODE);`,
-      [query],
+       AGAINST (? IN BOOLEAN MODE)
+       ORDER BY relevance_score DESC
+       LIMIT 15;`,
+      [`+${query}`, `+${query}`],  // 使用 + 强制匹配查询词
     );
+    
+    
 
     if (records.length === 0) {
       return [];
@@ -71,7 +79,7 @@ export class AccurateSearchService {
           isFuzzy: false,
         });
       }
-      console.timeEnd(`精准搜索全文: ${query}`);
+      //- console.timeEnd(`精准搜索全文: ${query}`);
       return finalRes;
     }
   }

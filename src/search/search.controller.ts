@@ -33,22 +33,33 @@ export class SearchController {
 
     
     // 并发
-    console.time('并发精准名称+模糊+精准全文');
-    let [fuzzySearchRes, /* accurateNameSearchRes, */ accurateSearchRes]: [
-      SearchFinalRes[] | fuzzySearchClusterErrorRes,
-      /* SearchFinalRes[], */
-      SearchFinalRes[],
+    //- console.time('并发精准名称+模糊+精准全文');
+    // let [fuzzySearchRes, accurateSearchRes]: [
+    //   SearchFinalRes[] | fuzzySearchClusterErrorRes,
+    //   /* SearchFinalRes[], */
+    //   fuzzySearchClusterSuccessRes | fuzzySearchClusterErrorRes
+    // ] = await Promise.all([
+    //   this.searchService.fuzzySearch(word),
+    //   /* this.accurateSearchService.findMedinfoByName(word), */
+    //   this.accurateSearchService.findMedinfoInAllFields(word),
+    // ]);
+
+    let [fuzzySearchRes, accurateSearchRes]: [
+      fuzzySearchClusterSuccessRes | fuzzySearchClusterErrorRes,
+      SearchFinalRes[]
     ] = await Promise.all([
       this.searchService.fuzzySearch(word),
-      /* this.accurateSearchService.findMedinfoByName(word), */
       this.accurateSearchService.findMedinfoInAllFields(word),
     ]);
+    
 
-    // let fuzzySearchRes:SearchFinalRes[] | fuzzySearchClusterErrorRes = await this.searchService.fuzzySearch(word);
-    // let accurateSearchRes: SearchFinalRes[] = await this.accurateSearchService.findMedinfoByName(word);
     if (!('error' in fuzzySearchRes)) {
-      console.timeEnd('并发精准名称+模糊+精准全文');
-      return [...accurateSearchRes, ...fuzzySearchRes];
+      //- console.timeEnd('并发精准名称+模糊+精准全文');
+      // 分两个数组回传
+      return {
+        "accurate": accurateSearchRes,
+        "fuzzy": fuzzySearchRes.words
+      }
     } else {
       return [];
     }
