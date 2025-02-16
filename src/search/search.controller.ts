@@ -5,12 +5,7 @@ import {
   type fuzzySearchClusterSuccessRes,
 } from './search.fuzzy.service';
 import { AccurateSearchService } from './search.service';
-/* "id": 84627,
-   "word": "清热",
-   "indexValue": 2,
-   “title”: “当归”,
-   "description" : “匹配文本段落”,
-   “picUrl”: "http:// ...", */
+
 export interface SearchFinalRes {
   id?: number;
   word: string; // 搜索词
@@ -30,20 +25,6 @@ export class SearchController {
 
   @Get()
   async searchByWord2Vec(@Query('wd') word: string) {
-
-    
-    // 并发
-    //- console.time('并发精准名称+模糊+精准全文');
-    // let [fuzzySearchRes, accurateSearchRes]: [
-    //   SearchFinalRes[] | fuzzySearchClusterErrorRes,
-    //   /* SearchFinalRes[], */
-    //   fuzzySearchClusterSuccessRes | fuzzySearchClusterErrorRes
-    // ] = await Promise.all([
-    //   this.searchService.fuzzySearch(word),
-    //   /* this.accurateSearchService.findMedinfoByName(word), */
-    //   this.accurateSearchService.findMedinfoInAllFields(word),
-    // ]);
-
     let [fuzzySearchRes, accurateSearchRes]: [
       fuzzySearchClusterSuccessRes | fuzzySearchClusterErrorRes,
       SearchFinalRes[]
@@ -55,7 +36,6 @@ export class SearchController {
 
     if (!('error' in fuzzySearchRes)) {
       //- console.timeEnd('并发精准名称+模糊+精准全文');
-      // 分两个数组回传
       return {
         "accurate": accurateSearchRes,
         "fuzzy": fuzzySearchRes.words
