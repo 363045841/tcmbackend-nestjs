@@ -19,12 +19,13 @@ export class ItemPageService {
   ) {}
 
   async getRelatedTcm(tcmId: number): Promise<RelatedInfoFinalRes[]> {
-    const temp = this.relatedTcmRepository
+    const temp = await this.relatedTcmRepository
       .createQueryBuilder('r')
       .innerJoin('data_with_header_final', 'd', 'r.related_tcm_id = d.id')
-      .select(['r.related_tcm_id', 'd.tcmName'])
+      .select(['r.related_tcm_id AS related_tcm_id', 'd.tcmName AS tcmName']) // 使用 AS 指定别名
       .where('r.tcm_id = :tcmId', { tcmId })
       .getRawMany();
+    console.log(temp);
     return temp;
   }
 }
