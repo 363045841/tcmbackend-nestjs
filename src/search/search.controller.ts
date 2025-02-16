@@ -41,7 +41,10 @@ export class SearchController {
         "fuzzy": fuzzySearchRes.words
       }
     } else {
-      return [];
+      return {
+        "accurate": accurateSearchRes,
+        "fuzzy": []
+      }
     }
   }
 }

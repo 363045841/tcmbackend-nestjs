@@ -12,6 +12,8 @@ import { IndexTable } from './search/IndexTable.entity';
 import * as path from 'path';
 import { Word } from './search/Word.entity';
 import { WordIndex } from './search/WordIndex.entity';
+import { ItemPageModule } from './item-page/item-page.module';
+import { RelatedTcm } from './item-page/relatetcm.entity';
 
 @Module({
   imports: [MedinfoModule,ConfigModule.forRoot({
@@ -46,13 +48,13 @@ import { WordIndex } from './search/WordIndex.entity';
         password: configService.get('TYPEORM_PASSWORD'),
         database: configService.get('TYPEORM_DATABASE'),
         synchronize: true,
-        entities: [medinfo,IndexTable,Word,WordIndex], // 实体类数组
+        entities: [medinfo,IndexTable,Word,WordIndex,RelatedTcm], // 实体类数组
         logging: ['error'],
       } as TypeOrmModuleOptions;
       // console.log('数据库配置完成:', dbConfig);
       return dbConfig;
     },
-  }), SearchModule],
+  }), SearchModule, ItemPageModule],
   controllers: [AppController,],
   providers: [AppService],
 })

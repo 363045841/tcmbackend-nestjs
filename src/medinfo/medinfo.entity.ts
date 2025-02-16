@@ -1,4 +1,11 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { RelatedTcm } from "../item-page/relatetcm.entity";
 
 @Index(
   "idx_fulltext_all",
@@ -73,4 +80,10 @@ export class medinfo {
 
   @Column("text", { name: "prescription", nullable: true })
   prescription: string | null;
+
+  @OneToMany(() => RelatedTcm, (relatedTcm) => relatedTcm.tcm)
+  relatedTcms: RelatedTcm[];
+
+  @OneToMany(() => RelatedTcm, (relatedTcm) => relatedTcm.relatedTcm)
+  relatedTcms2: RelatedTcm[];
 }
