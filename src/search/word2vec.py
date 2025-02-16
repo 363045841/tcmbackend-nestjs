@@ -2,8 +2,6 @@ import sys
 import pandas as pd
 import json
 
-# 读取 CSV 文件（假设 CSV 文件名为 clusters.csv）
-""" df = pd.read_csv("src\\search\\kmeans_clusters_v31.csv")  # x, y, word, cluster """
 from pathlib import Path
 import pandas as pd
 
@@ -11,7 +9,7 @@ import pandas as pd
 base_dir = Path(__file__).parent
 
 # 拼接路径（跨平台适用）
-csv_path = base_dir / "kmeans_clusters_v31.csv"
+csv_path = base_dir / "hierarchical_clusters_v31.csv"
 
 # 读取 CSV 文件
 df = pd.read_csv(csv_path)

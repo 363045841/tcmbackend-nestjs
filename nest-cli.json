@@ -6,7 +6,7 @@
     "deleteOutDir": true,
     "assets": [
       "search/word2vec.py",
-      "search/kmeans_clusters_v31.csv"
+      "search/hierarchical_clusters_v31.csv"
     ]
   }
 }
