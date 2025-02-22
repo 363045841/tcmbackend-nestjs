@@ -8,7 +8,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, new FastifyAdapter());
   app.setGlobalPrefix("api/v1");
   app.enableCors();
-  await app.listen(process.env.PORT ?? 3001);
+  await app.listen(process.env.PORT ?? 3001, '0.0.0.0');
+
   console.log(`Server is running on port ${process.env.PORT ?? 3001}`);
 
   if (module.hot) {
