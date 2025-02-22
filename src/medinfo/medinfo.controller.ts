@@ -11,11 +11,17 @@ export class MedinfoController {
 
   @Get('page/:id')
   getPage(@Param('id') id: number) {
-    return this.medinfoService.getPage(id)
+    return this.medinfoService.getPage(id);
+  }
+
+  @Get('page/name/:name')
+  async getPageByName(@Param('name') name: string) {
+    let res:any = await this.medinfoService.getPageIDByName(name);
+    return { "id": res };
   }
 
   @Get('length')
   getMedinfoTableLength() {
-    return this.medinfoService.getMedinfoTableLength()
+    return this.medinfoService.getMedinfoTableLength();
   }
 }

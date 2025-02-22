@@ -13,11 +13,19 @@ export class MedinfoService {
     let ans = await this.medinfoRepository.findOne({ where: { id } });
     if(ans !== null) {
       for(let key in ans){
-        if(ans[key] === null) ans[key] = "";
+        if(ans[key] === null) ans[key] = "无";
       }
       return ans;
     }
     else return null;
+  }
+  async getPageIDByName(name: string): Promise<number> {
+    let res = await this.medinfoRepository.findOne({
+      select: ['tcmName', 'id'],
+      where: { tcmName: name },
+    });
+    console.log(res?.id);
+    return res?.id || -1;
   }
   async getMedinfoTableLength() {
     return await this.medinfoRepository.count();
