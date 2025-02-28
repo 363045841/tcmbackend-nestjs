@@ -17,6 +17,8 @@ import { RelatedTcm } from './item-page/relatetcm.entity';
 import { AimessageModule } from './aimessage/aimessage.module';
 import { Conversations } from './aimessage/conversations.entity';
 import { Messages } from './aimessage/messages.entity';
+import { EtcmModule } from './etcm/etcm.module';
+import { Comprehensiveherbinfo } from './etcm/etcm.entity';
 
 @Module({
   imports: [
@@ -68,6 +70,7 @@ import { Messages } from './aimessage/messages.entity';
             RelatedTcm,
             Conversations,
             Messages,
+            Comprehensiveherbinfo
           ], // 实体类数组
           logging: ['error'],
         } as TypeOrmModuleOptions;
@@ -78,6 +81,7 @@ import { Messages } from './aimessage/messages.entity';
     SearchModule,
     ItemPageModule,
     AimessageModule,
+    EtcmModule,
   ],
   controllers: [AppController],
   providers: [AppService],

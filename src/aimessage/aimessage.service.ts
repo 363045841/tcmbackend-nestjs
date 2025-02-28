@@ -79,9 +79,11 @@ export class AimessageService {
         conversation_id: message.conversation_id,
         stream: false,
       }),
-    }).then((res) => res.json()).then((data) => {
-      ans = (data as any).answer;
     })
+      .then((res) => res.json())
+      .then((data) => {
+        ans = (data as any).answer;
+      });
     return ans;
   }
 }
