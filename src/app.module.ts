@@ -18,7 +18,8 @@ import { AimessageModule } from './aimessage/aimessage.module';
 import { Conversations } from './aimessage/conversations.entity';
 import { Messages } from './aimessage/messages.entity';
 import { EtcmModule } from './etcm/etcm.module';
-import { Comprehensiveherbinfo } from './etcm/etcm.entity';
+import { Comprehensiveherbinfo } from './etcm/entity/etcm.entity';
+import { GuJiFangJi } from './etcm/entity/gujifangji.entity';
 
 @Module({
   imports: [
@@ -70,9 +71,10 @@ import { Comprehensiveherbinfo } from './etcm/etcm.entity';
             RelatedTcm,
             Conversations,
             Messages,
-            Comprehensiveherbinfo
+            Comprehensiveherbinfo,
+            GuJiFangJi
           ], // 实体类数组
-          logging: ['error'],
+          logging: true
         } as TypeOrmModuleOptions;
         // console.log('数据库配置完成:', dbConfig);
         return dbConfig;
