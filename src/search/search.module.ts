@@ -7,9 +7,11 @@ import { medinfo } from '../medinfo/medinfo.entity';
 import { Word } from './Word.entity';
 import { WordIndex } from './WordIndex.entity';
 import { AccurateSearchService } from './search.service';
+import { GuJiFangJi } from '../etcm/entity/gujifangji.entity';
+
 
 @Module({
-  imports: [TypeOrmModule.forFeature([IndexTable,medinfo,Word,WordIndex])],
+  imports: [TypeOrmModule.forFeature([IndexTable,medinfo,Word,WordIndex,GuJiFangJi])],
   providers: [FuzzySearchService,AccurateSearchService],
   controllers: [SearchController]
 })

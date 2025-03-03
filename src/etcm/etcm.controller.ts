@@ -1,6 +1,6 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { EtcmService } from './etcm.service';
-import { DataMiningService } from './data-mining/data-mining.service';
+import { CountInfo, DataMiningService } from './data-mining/data-mining.service';
 
 @Controller('etcm')
 export class EtcmController {
@@ -14,8 +14,11 @@ export class EtcmController {
     return this.etcmService.getByName(name);
   }
 
+  // PREF 搜索ETCM数据的时候,可以性能优化,单字调LIKE正常查询,两个字及以上调索引MATCH
   @Get('/mineCount/:name')
   async dataMine(@Param('name') name: string) {
-    return this.dataMiningService.getCount(name);
+    let countRes: CountInfo[] = await this.dataMiningService.getCount(name);
+    let medicineCount = this.dataMiningService.getMedicineCount(countRes);
+    return medicineCount;
   }
 }

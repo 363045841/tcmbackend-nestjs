@@ -16,6 +16,12 @@ export interface SearchFinalRes {
   isFuzzy: boolean;
 }
 
+export interface ETCMGuJiFangJiRes {
+  id: number;
+  title: string; // 药材名称
+  description: string; // 药材描述
+}
+
 @Controller('search')
 export class SearchController {
   constructor(
@@ -25,26 +31,28 @@ export class SearchController {
 
   @Get()
   async searchByWord2Vec(@Query('wd') word: string) {
-    let [fuzzySearchRes, accurateSearchRes]: [
+    let [fuzzySearchRes, accurateSearchRes, gujifangjiSearchRes]: [
       fuzzySearchClusterSuccessRes | fuzzySearchClusterErrorRes,
-      SearchFinalRes[]
+      SearchFinalRes[],ETCMGuJiFangJiRes[]
     ] = await Promise.all([
       this.searchService.fuzzySearch(word),
       this.accurateSearchService.findMedinfoInAllFields(word),
+      this.accurateSearchService.getFromGujifangji(word),
     ]);
-    
 
     if (!('error' in fuzzySearchRes)) {
       //- console.timeEnd('并发精准名称+模糊+精准全文');
       return {
-        "accurate": accurateSearchRes,
-        "fuzzy": fuzzySearchRes.words
-      }
+        accurate: accurateSearchRes,
+        fuzzy: fuzzySearchRes.words,
+        ETCM: gujifangjiSearchRes // 这里的prescrption暂时返回的是药材配方信息，未来再看看
+      };
     } else {
       return {
-        "accurate": accurateSearchRes,
-        "fuzzy": []
-      }
+        accurate: accurateSearchRes,
+        fuzzy: [],
+        ETCM: gujifangjiSearchRes,
+      };
     }
   }
 }

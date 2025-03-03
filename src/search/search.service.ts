@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { medinfo } from '../medinfo/medinfo.entity';
 import { Repository } from 'typeorm';
-import { SearchFinalRes } from './search.controller';
+import { ETCMGuJiFangJiRes, SearchFinalRes } from './search.controller';
+import { GuJiFangJi } from '../etcm/entity/gujifangji.entity';
 @Injectable()
 export class AccurateSearchService {
   constructor(
     @InjectRepository(medinfo)
     private readonly medinfoRepository: Repository<medinfo>,
+    @InjectRepository(GuJiFangJi)
+    private readonly gujifangjiRepository: Repository<GuJiFangJi>,
   ) {}
 
   /**
@@ -59,10 +62,8 @@ export class AccurateSearchService {
        AGAINST (? IN BOOLEAN MODE)
        ORDER BY relevance_score DESC
        LIMIT 15;`,
-      [`+${query}`, `+${query}`],  // 使用 + 强制匹配查询词
+      [`+${query}`, `+${query}`], // 使用 + 强制匹配查询词
     );
-    
-    
 
     if (records.length === 0) {
       return [];
@@ -82,5 +83,19 @@ export class AccurateSearchService {
       //- console.timeEnd(`精准搜索全文: ${query}`);
       return finalRes;
     }
+  }
+
+  async getFromGujifangji(query: string) {
+    let finalRes: ETCMGuJiFangJiRes[] = [];
+    const result = await this.gujifangjiRepository
+      .createQueryBuilder('gu')
+      .select(['gu.recipeName', 'gu.prescriptionIngredients'])
+      .where('gu.recipeName LIKE :searchTerm', {
+        searchTerm: `%${query}%`,
+      })
+      .limit(5)
+      .getMany();
+    console.log(result);
+    return result as unknown as ETCMGuJiFangJiRes[];
   }
 }

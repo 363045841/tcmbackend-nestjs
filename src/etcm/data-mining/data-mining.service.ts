@@ -42,4 +42,23 @@ export class DataMiningService {
       prescription_ingredients: item.prescription_ingredients,
     }));
   }
+
+
+  getMedicineCount(list: CountInfo[]) {
+    let medicineCount: Map<string, number> = new Map();
+    list.map((item) => {
+      let split: string[] = item.prescription_ingredients?.split(',') || [];
+      split.map((medicine) => {
+        if (medicineCount.has(medicine)) {
+          let count = medicineCount.get(medicine) || 0;
+          count += 1;
+          medicineCount.set(medicine, count);
+        } else {
+          medicineCount.set(medicine, 1);
+        }
+      });
+    })
+    console.log(Array.from(medicineCount).sort((a, b) => b[1] - a[1]))
+    return Array.from(medicineCount).sort((a, b) => b[1] - a[1]);
+  }
 }
