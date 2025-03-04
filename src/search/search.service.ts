@@ -99,7 +99,6 @@ export class AccurateSearchService {
       })
       .limit(5)
       .getMany();
-    console.log(result);
     return result as unknown as ETCMGuJiFangJiRes[];
   }
 
@@ -114,7 +113,6 @@ export class AccurateSearchService {
       })
       .limit(5)
       .getMany();
-    console.log(result);
     return result as unknown as ETCMGuJiFangJiRes[];// TODO 重构这个难绷的类型转换
   }
 }
