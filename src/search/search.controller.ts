@@ -31,13 +31,16 @@ export class SearchController {
 
   @Get()
   async searchByWord2Vec(@Query('wd') word: string) {
-    let [fuzzySearchRes, accurateSearchRes, gujifangjiSearchRes]: [
+    let [fuzzySearchRes, accurateSearchRes, gujifangjiSearchRes, chineseMedicinalHerbsRes]: [
       fuzzySearchClusterSuccessRes | fuzzySearchClusterErrorRes,
-      SearchFinalRes[],ETCMGuJiFangJiRes[]
+      SearchFinalRes[],
+      ETCMGuJiFangJiRes[],
+      ETCMGuJiFangJiRes[]
     ] = await Promise.all([
       this.searchService.fuzzySearch(word),
       this.accurateSearchService.findMedinfoInAllFields(word),
       this.accurateSearchService.getFromGujifangji(word),
+      this.accurateSearchService.getFromECTMChineseHerbs(word),
     ]);
 
     if (!('error' in fuzzySearchRes)) {
@@ -45,13 +48,15 @@ export class SearchController {
       return {
         accurate: accurateSearchRes,
         fuzzy: fuzzySearchRes.words,
-        ETCM: gujifangjiSearchRes // 这里的prescrption暂时返回的是药材配方信息，未来再看看
+        ETCMFangji: gujifangjiSearchRes, // 这里的prescrption暂时返回的是药材配方信息，未来再看看
+        ETCMHerbs: chineseMedicinalHerbsRes,
       };
     } else {
       return {
         accurate: accurateSearchRes,
         fuzzy: [],
         ETCM: gujifangjiSearchRes,
+        ECTMHerbs: chineseMedicinalHerbsRes,
       };
     }
   }

@@ -4,6 +4,8 @@ import { medinfo } from '../medinfo/medinfo.entity';
 import { Repository } from 'typeorm';
 import { ETCMGuJiFangJiRes, SearchFinalRes } from './search.controller';
 import { GuJiFangJi } from '../etcm/entity/gujifangji.entity';
+import { ChineseMedicinalHerbs } from 'src/etcm/entity/zhongyaocai.entity';
+
 @Injectable()
 export class AccurateSearchService {
   constructor(
@@ -11,6 +13,8 @@ export class AccurateSearchService {
     private readonly medinfoRepository: Repository<medinfo>,
     @InjectRepository(GuJiFangJi)
     private readonly gujifangjiRepository: Repository<GuJiFangJi>,
+    @InjectRepository(ChineseMedicinalHerbs)
+    private readonly chineseMedicinalHerbs: Repository<ChineseMedicinalHerbs>,
   ) {}
 
   /**
@@ -97,5 +101,20 @@ export class AccurateSearchService {
       .getMany();
     console.log(result);
     return result as unknown as ETCMGuJiFangJiRes[];
+  }
+
+  // TODO 重构这一块的interface
+  async getFromECTMChineseHerbs(query: string) {
+    let finalRes: ETCMGuJiFangJiRes[] = [];
+    const result = await this.chineseMedicinalHerbs
+      .createQueryBuilder('gu')
+      .select(['gu.name','gu.nature'])
+      .where('gu.name LIKE :searchTerm', {
+        searchTerm: `%${query}%`,
+      })
+      .limit(5)
+      .getMany();
+    console.log(result);
+    return result as unknown as ETCMGuJiFangJiRes[];// TODO 重构这个难绷的类型转换
   }
 }

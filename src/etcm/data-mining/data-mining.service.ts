@@ -19,7 +19,7 @@ export class DataMiningService {
   ) {}
 
   async getCount(name: string): Promise<CountInfo[]> {
-    const keyword = '艾'; // 你的查询参数
+    const keyword = name; // 你的查询参数
     const sql = `
     SELECT recipe_name, prescription_ingredients
     FROM gu_ji_fang_ji
