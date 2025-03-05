@@ -19,7 +19,8 @@ export class DataMiningService {
   ) {}
 
   async getCount(name: string): Promise<CountInfo[]> {
-    const keyword = name; // 你的查询参数
+    // TODO 后期直接从fangjixiangxi表中查询完整数据
+    const keyword = name;
     const sql = `
     SELECT recipe_name, prescription_ingredients
     FROM gu_ji_fang_ji
@@ -34,7 +35,7 @@ export class DataMiningService {
       `%,${keyword}`,
     ]);
 
-    console.log(result.map((item) => item.prescription_ingredients))
+    console.log(result.map((item) => item.prescription_ingredients));
 
     // 手动转换为 CountInfo[] 类型
     return result.map((item) => ({
@@ -43,8 +44,8 @@ export class DataMiningService {
     }));
   }
 
-
   getMedicineCount(list: CountInfo[]) {
+    console.log(list);
     let medicineCount: Map<string, number> = new Map();
     list.map((item) => {
       let split: string[] = item.prescription_ingredients?.split(',') || [];
@@ -57,8 +58,13 @@ export class DataMiningService {
           medicineCount.set(medicine, 1);
         }
       });
-    })
-    console.log(Array.from(medicineCount).sort((a, b) => b[1] - a[1]))
-    return Array.from(medicineCount).sort((a, b) => b[1] - a[1]);
+    });
+    console.log(Array.from(medicineCount.entries()));
+    const result = Array.from(medicineCount.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+    return result;
   }
+
+  // getTasteCount(list: )
 }

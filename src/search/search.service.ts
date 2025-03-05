@@ -4,7 +4,7 @@ import { medinfo } from '../medinfo/medinfo.entity';
 import { Repository } from 'typeorm';
 import { ETCMGuJiFangJiRes, SearchFinalRes } from './search.controller';
 import { GuJiFangJi } from '../etcm/entity/gujifangji.entity';
-import { ChineseMedicinalHerbs } from 'src/etcm/entity/zhongyaocai.entity';
+import { ChineseMedicinalHerbs } from '../etcm/entity/zhongyaocai.entity';
 
 @Injectable()
 export class AccurateSearchService {

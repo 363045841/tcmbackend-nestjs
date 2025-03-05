@@ -11,6 +11,8 @@ export class EtcmService {
   ) {}
 
   async getByName(name: string) {
-    return await this.comprehensiveherbinfoRepository.findOne({ where: { herbName: name } });
+    return await this.comprehensiveherbinfoRepository.findOne({
+      where: { herbName: name },
+    });
   }
 }

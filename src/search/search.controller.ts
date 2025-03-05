@@ -56,7 +56,7 @@ export class SearchController {
         accurate: accurateSearchRes,
         fuzzy: [],
         ETCM: gujifangjiSearchRes,
-        ECTMHerbs: chineseMedicinalHerbsRes,
+        ETCMHerbs: chineseMedicinalHerbsRes,
       };
     }
   }
