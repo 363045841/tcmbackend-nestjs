@@ -21,6 +21,7 @@ import { EtcmModule } from './etcm/etcm.module';
 import { Comprehensiveherbinfo } from './etcm/entity/etcm.entity';
 import { GuJiFangJi } from './etcm/entity/gujifangji.entity';
 import { ChineseMedicinalHerbs } from './etcm/entity/zhongyaocai.entity';
+import { Fangjixiangxi } from './etcm/entity/fangjixiangxi.entity';
 
 @Module({
   imports: [
@@ -74,7 +75,8 @@ import { ChineseMedicinalHerbs } from './etcm/entity/zhongyaocai.entity';
             Messages,
             Comprehensiveherbinfo,
             GuJiFangJi,
-            ChineseMedicinalHerbs
+            ChineseMedicinalHerbs,
+            Fangjixiangxi,
           ], // 实体类数组
           logging: ['error', 'warn']
         } as TypeOrmModuleOptions;

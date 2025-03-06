@@ -6,6 +6,7 @@ import { Comprehensiveherbinfo } from './entity/etcm.entity';
 import { DataMiningService } from './data-mining/data-mining.service';
 import { GuJiFangJi } from './entity/gujifangji.entity';
 import { ChineseMedicinalHerbs } from './entity/zhongyaocai.entity';
+import { Fangjixiangxi } from './entity/fangjixiangxi.entity';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { ChineseMedicinalHerbs } from './entity/zhongyaocai.entity';
       Comprehensiveherbinfo,
       GuJiFangJi,
       ChineseMedicinalHerbs,
+      Fangjixiangxi
     ]),
   ],
   providers: [EtcmService, DataMiningService],

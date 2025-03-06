@@ -22,8 +22,9 @@ export class EtcmController {
   async dataMine(@Param('name') name: string) {
     let countRes: CountInfo[] = await this.dataMiningService.getCount(name); // 拿到组方包含name的药材表
     let medicineCount = this.dataMiningService.getMedicineCount(countRes);
-    // let tasteCount:[string, number][] = ;
-    // let natureCount:[string, number][] = ;
+    let herbNameList: string[] = medicineCount.map((item) => item.name).filter(name => name !== null);
+    let natureCount = this.dataMiningService.getNatureCount(herbNameList);
+    let tasteCount = this.dataMiningService.getTasteCount(herbNameList);
     return medicineCount;
   }
 }
