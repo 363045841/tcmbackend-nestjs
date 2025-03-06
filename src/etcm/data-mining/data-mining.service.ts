@@ -102,7 +102,38 @@ export class DataMiningService {
         }
       });
     });
-    console.log(tasteCount);
+    const result = Array.from(tasteCount.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+    console.log(result);
+    return res;
+  }
+
+  async getFunctionCount(herbNameList: string[]) {
+    const res = await this.comprehensiveherbinfoRepository
+      .createQueryBuilder('herb')
+      .select('herb.efficacy', 'efficacy') // 选择 efficacy 字段
+      .where('herb.herb_name IN (:...herbNameList)', { herbNameList }) // 传入 herbNameList
+      .getRawMany(); // 获取原始数据
+
+    let efficacyCount: Map<string, number> = new Map();
+    res.map((item) => {
+      let temp = item.efficacy.split('、');
+      temp.map((taste) => {
+        if (efficacyCount.has(taste)) {
+          let count = efficacyCount.get(taste) || 0;
+          count += 1;
+          efficacyCount.set(taste, count);
+        } else {
+          efficacyCount.set(taste, 1);
+        }
+      });
+    });
+    const result = Array.from(efficacyCount.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+
+    console.log(result);
     return res;
   }
 }

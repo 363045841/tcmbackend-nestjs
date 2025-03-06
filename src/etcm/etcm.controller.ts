@@ -25,6 +25,7 @@ export class EtcmController {
     let herbNameList: string[] = medicineCount.map((item) => item.name).filter(name => name !== null);
     let natureCount = this.dataMiningService.getNatureCount(herbNameList);
     let tasteCount = this.dataMiningService.getTasteCount(herbNameList);
+    let functionCount = this.dataMiningService.getFunctionCount(herbNameList);
     return medicineCount;
   }
 }
