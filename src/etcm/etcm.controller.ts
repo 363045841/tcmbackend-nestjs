@@ -4,6 +4,8 @@ import {
   CountInfo,
   DataMiningService,
 } from './data-mining/data-mining.service';
+import { count } from 'console';
+import { tasteRes } from './data-mining/data-mining.service';
 
 @Controller('etcm')
 export class EtcmController {
@@ -23,9 +25,14 @@ export class EtcmController {
     let countRes: CountInfo[] = await this.dataMiningService.getCount(name); // 拿到组方包含name的药材表
     let medicineCount = this.dataMiningService.getMedicineCount(countRes);
     let herbNameList: string[] = medicineCount.map((item) => item.name).filter(name => name !== null);
-    let natureCount = this.dataMiningService.getNatureCount(herbNameList);
-    let tasteCount = this.dataMiningService.getTasteCount(herbNameList);
-    let functionCount = this.dataMiningService.getFunctionCount(herbNameList);
-    return medicineCount;
+    let natureCount = await this.dataMiningService.getNatureCount(herbNameList);
+    let tasteCount = await this.dataMiningService.getTasteCount(herbNameList);
+    let functionCount = await this.dataMiningService.getFunctionCount(herbNameList);
+    return {
+      count: countRes,
+      natureCount: natureCount,
+      tasteCount: tasteCount,
+      functionCount: functionCount,
+    }
   }
 }

@@ -10,8 +10,13 @@ export interface CountInfo {
   prescription_ingredients: string | null;
 }
 
-interface tasteRes {
+export interface tasteRes {
   taste: string;
+}
+
+export interface NatureCountResult {
+  name: string; // 对应查询结果中的 name 字段
+  count: number; // 确保 count 是数字类型
 }
 
 @Injectable()
@@ -42,8 +47,6 @@ export class DataMiningService {
       `%,${keyword}`,
     ]);
 
-    // console.log(result.map((item) => item.prescription_ingredients));
-
     // 手动转换为 CountInfo[] 类型
     return result.map((item) => ({
       recipe_name: item.recipe_name,
@@ -51,7 +54,7 @@ export class DataMiningService {
     }));
   }
 
-  getMedicineCount(list: CountInfo[]) {
+  getMedicineCount(list: CountInfo[], limit: number = 3) {
     let medicineCount: Map<string, number> = new Map();
     list.map((item) => {
       let split: string[] = item.prescription_ingredients?.split(',') || [];
@@ -65,22 +68,36 @@ export class DataMiningService {
         }
       });
     });
+    // 删除出现次数小于 limit 的药材
+    for (let [name, count] of medicineCount) {
+      if (count < limit) {
+        medicineCount.delete(name);
+      }
+    }
+
     const result = Array.from(medicineCount.entries())
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
     return result;
   }
 
-  async getNatureCount(herbNameList: string[]) {
+  async getNatureCount(herbNameList: string[]): Promise<NatureCountResult[]> {
     const res = await this.comprehensiveherbinfoRepository
       .createQueryBuilder('herb')
-      .select('herb.nature', 'nature') // 选择 nature 字段
+      .select('herb.nature', 'name') // 使用别名，将 nature 字段命名为 name
       .addSelect('COUNT(*)', 'count') // 统计数量
       .where('herb.herb_name IN (:...herbNameList)', { herbNameList }) // 传入 herbNameList
       .groupBy('herb.nature') // 按 nature 分组
       .getRawMany(); // 获取原始数据
-    // console.log(res);
-    return res;
+
+    // 将 count 转换为数字类型
+    const result = res.map((item) => ({
+      name: item.name,
+      count: Number(item.count), // 确保 count 是数字类型
+    }));
+
+    console.log(result); // 打印结果以供调试
+    return result; // 返回最终结果
   }
 
   async getTasteCount(herbNameList: string[]) {
@@ -106,10 +123,10 @@ export class DataMiningService {
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
     console.log(result);
-    return res;
+    return result;
   }
 
-  async getFunctionCount(herbNameList: string[]) {
+  async getFunctionCount(herbNameList: string[], limit: number = 1) {
     const res = await this.comprehensiveherbinfoRepository
       .createQueryBuilder('herb')
       .select('herb.efficacy', 'efficacy') // 选择 efficacy 字段
@@ -129,11 +146,18 @@ export class DataMiningService {
         }
       });
     });
+    // 删除value<=limit的键值对
+    for (let [key, value] of efficacyCount) {
+      if (value <= limit) {
+        efficacyCount.delete(key);
+      }
+    }
+
     const result = Array.from(efficacyCount.entries())
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
 
     console.log(result);
-    return res;
+    return result;
   }
 }
