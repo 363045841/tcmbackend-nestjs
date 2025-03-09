@@ -19,6 +19,11 @@ export interface NatureCountResult {
   count: number; // 确保 count 是数字类型
 }
 
+interface symptopsCountRes {
+  symptoms: string;
+  count: number;
+}
+
 @Injectable()
 export class DataMiningService {
   constructor(
@@ -156,8 +161,41 @@ export class DataMiningService {
     const result = Array.from(efficacyCount.entries())
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
+    return result;
+  }
 
-    console.log(result);
+  async getSymptopsCount(FangjiList: string[], limit: number = 3) {
+    // 获取方剂治疗疾病统计信息
+    const res = await this.fangjixiangxiRepository
+      .createQueryBuilder('f') // 创建查询构建器，别名为 'f'
+      .select('DISTINCT f.symptoms', 'symptoms') // 选择 DISTINCT symptoms
+      .where('f.name IN (:...names)', { names: FangjiList })
+      .getRawMany(); // 获取原始结果
+    let countMap = new Map<string, number>();
+    res.map((item) => {
+      let temp: string[] = item.symptoms?.split('、') || []; // 确保 symptoms 是字符串，如果不是则默认为空数组
+      temp = temp.map((item) => item.trim()); // 去除字符串中的空格
+
+      temp.map((taste) => {
+        if (countMap.has(taste)) {
+          let count = countMap.get(taste) || 0;
+          count += 1;
+          countMap.set(taste, count);
+        } else {
+          countMap.set(taste, 1);
+        }
+      });
+    });
+    // 删除value<=limit的键值对
+    for (let [key, value] of countMap) {
+      if (value <= limit) {
+        countMap.delete(key);
+      }
+    }
+    countMap.get('') && countMap.delete('')
+    const result = Array.from(countMap.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
     return result;
   }
 }
