@@ -6,7 +6,8 @@
     "deleteOutDir": true,
     "assets": [
       "search/word2vec.py",
-      "search/hierarchical_clusters_v31.csv"
+      "search/hierarchical_clusters_v31.csv",
+      "etcm/data-mining/apriori.py"
     ]
   }
 }

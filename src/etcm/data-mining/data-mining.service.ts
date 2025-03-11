@@ -4,6 +4,8 @@ import { In, Repository } from 'typeorm';
 import { Comprehensiveherbinfo } from '../entity/etcm.entity';
 import { GuJiFangJi } from '../entity/gujifangji.entity';
 import { Fangjixiangxi } from '../entity/fangjixiangxi.entity';
+import { spawn } from 'child_process';
+import * as path from 'path';
 
 export interface CountInfo {
   recipe_name: string | null;
@@ -192,10 +194,91 @@ export class DataMiningService {
         countMap.delete(key);
       }
     }
-    countMap.get('') && countMap.delete('')
+    countMap.get('') && countMap.delete('');
     const result = Array.from(countMap.entries())
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
     return result;
+  }
+
+  async getDataMineRule(name: string, support: number = 0.1, confidence: number = 0.3) {
+    try {
+      const RuleRes = (await this.getCount(name)).map(
+        (item) => item.prescription_ingredients,
+      );
+      // 创建子进程，执行 Python 脚本
+      path.join(__dirname, 'apriori.py');
+      const pythonProcess = spawn(
+        'python',
+        [
+          path.join(__dirname, 'apriori.py'),
+          '--support', support.toString(), // 支持度参数
+          '--confidence', confidence.toString(), // 置信度参数
+        ],
+        {
+          stdio: ['pipe', 'pipe', 'pipe'], // 配置 stdin, stdout, stderr 为管道
+          env: { ...process.env, PYTHONIOENCODING: 'utf-8' }, // 设置 Python 的 IO 编码为 UTF-8
+        },
+      );
+
+      // 收集 Python 脚本的标准输出和错误输出
+      let output = '';
+      let errorOutput = '';
+
+      pythonProcess.stdout.on('data', (data) => {
+        output += data.toString('utf-8'); // 显式指定 UTF-8 编码
+      });
+
+      pythonProcess.stderr.on('data', (data) => {
+        errorOutput += data.toString('utf-8'); // 显式指定 UTF-8 编码
+      });
+
+      // 将数据通过 stdin 传递给 Python 脚本
+      try {
+        pythonProcess.stdin.write(RuleRes.join('\n')); // 每个方剂一行
+        pythonProcess.stdin.end(); // 结束输入流
+      } catch (err) {
+        console.error(`Error writing to stdin: ${err.message}`);
+        throw new Error('Failed to write data to Python script.');
+      }
+
+      // 等待子进程结束
+      await new Promise<void>((resolve, reject) => {
+        pythonProcess.on('close', (code) => {
+          if (code !== 0) {
+            console.error(
+              `Python script exited with code ${code}: ${errorOutput}`,
+            );
+            reject(new Error(`Python script failed: ${errorOutput}`));
+          } else {
+            resolve();
+          }
+        });
+
+        // 处理子进程错误事件
+        pythonProcess.on('error', (err) => {
+          console.error(`Python process error: ${err.message}`);
+          reject(err);
+        });
+      });
+
+      // 返回 Python 脚本的输出结果
+      let temp = output
+        .split('\r')
+        .filter(Boolean)
+        .map((item) => item.replace('\n', ''));
+      return temp.map((item) => {
+        let splitArray = item.split(',');
+        return {
+          ruleBefore: splitArray[0],
+          ruleAfter: splitArray[1],
+          confidence: splitArray[2],
+          lift: splitArray[3],
+        };
+      });
+    } catch (error) {
+      console.error(`Error in dataMineRule: ${error.message}`);
+      throw new Error('Failed to execute data mining rule.');
+    }
   }
 }

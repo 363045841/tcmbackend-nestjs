@@ -6,6 +6,8 @@ import {
 } from './data-mining/data-mining.service';
 import { count } from 'console';
 import { tasteRes } from './data-mining/data-mining.service';
+import { spawn } from 'child_process';
+import path from 'path';
 
 @Controller('etcm')
 export class EtcmController {
@@ -42,5 +44,13 @@ export class EtcmController {
       functionCount: functionCount,
       symptomsCount: symptomsCount,
     };
+  }
+
+  @Get('/mineRule/:name')
+  async dataMineRule(@Param('name') name: string) {
+    let rule = await this.dataMiningService.getDataMineRule(name);
+    return {
+      rule: rule,
+    }
   }
 }
