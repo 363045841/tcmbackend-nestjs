@@ -49,8 +49,6 @@ export class EtcmController {
   @Get('/mineRule/:name')
   async dataMineRule(@Param('name') name: string) {
     let rule = await this.dataMiningService.getDataMineRule(name);
-    return {
-      rule: rule,
-    }
+    return rule;
   }
 }
