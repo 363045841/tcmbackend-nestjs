@@ -12,6 +12,7 @@
     "chrome-devtools": "node --inspect-brk dist/main.js",
     "start": "cross-env NODE_ENV=production nest start",
     "start:dev": "cross-env NODE_ENV=development nest start --watch",
+    "start:test_prod": "cross-env NODE_ENV=development nest start",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "start:firebase": "0x dist/main.js",

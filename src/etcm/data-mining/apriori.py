@@ -56,7 +56,7 @@ def main():
             lift = rule['lift']
 
             # 输出规则为 CSV 格式，方便 NestJS 解析
-            print(f"{','.join(antecedents)} -> {','.join(consequents)}, {confidence:.2f}, {lift:.2f}")
+            print(f"{'、'.join(antecedents)},{'、'.join(consequents)},{confidence:.2f},{lift:.2f}")
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)

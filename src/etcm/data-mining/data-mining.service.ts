@@ -201,7 +201,11 @@ export class DataMiningService {
     return result;
   }
 
-  async getDataMineRule(name: string, support: number = 0.1, confidence: number = 0.3) {
+  async getDataMineRule(
+    name: string,
+    support: number = 0.1,
+    confidence: number = 0.3,
+  ) {
     try {
       const RuleRes = (await this.getCount(name)).map(
         (item) => item.prescription_ingredients,
@@ -209,11 +213,14 @@ export class DataMiningService {
       // 创建子进程，执行 Python 脚本
       path.join(__dirname, 'apriori.py');
       const pythonProcess = spawn(
-        'python',
+        /* 'python', */
+        process.env.NODE_ENV === 'development' ? 'python' : 'python3.8',
         [
           path.join(__dirname, 'apriori.py'),
-          '--support', support.toString(), // 支持度参数
-          '--confidence', confidence.toString(), // 置信度参数
+          '--support',
+          support.toString(), // 支持度参数
+          '--confidence',
+          confidence.toString(), // 置信度参数
         ],
         {
           stdio: ['pipe', 'pipe', 'pipe'], // 配置 stdin, stdout, stderr 为管道
@@ -262,18 +269,24 @@ export class DataMiningService {
         });
       });
 
-      // 返回 Python 脚本的输出结果
+      // 返回 Python 脚本的输出结果,注意分别处理windows和linux下的output换行符
       let temp = output
-        .split('\r')
-        .filter(Boolean)
-        .map((item) => item.replace('\n', ''));
+        .split(process.env.NODE_ENV === 'development' ? '\r' : '\n')
+        .map((item) => {
+          return item !== '' ? item.replace('\n', '') : '';
+        })
+        .filter(Boolean);
+      temp.forEach((item) => console.log(item));
+
+      /* .map((item) => item.replace('\n', '')); */
+
       return temp.map((item) => {
         let splitArray = item.split(',');
         return {
-          ruleBefore: splitArray[0],
-          ruleAfter: splitArray[1],
-          confidence: splitArray[2],
-          lift: splitArray[3],
+          ruleBefore: splitArray[0] ?? '',
+          ruleAfter: splitArray[1] ?? '',
+          confidence: splitArray[2] ?? '',
+          lift: splitArray[3] ?? '',
         };
       });
     } catch (error) {
