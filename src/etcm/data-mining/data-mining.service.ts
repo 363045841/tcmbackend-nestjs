@@ -210,6 +210,7 @@ export class DataMiningService {
       const RuleRes = (await this.getCount(name)).map(
         (item) => item.prescription_ingredients,
       );
+
       // 创建子进程，执行 Python 脚本
       path.join(__dirname, 'apriori.py');
       const pythonProcess = spawn(
@@ -276,7 +277,7 @@ export class DataMiningService {
           return item !== '' ? item.replace('\n', '') : '';
         })
         .filter(Boolean);
-      temp.forEach((item) => console.log(item));
+      // temp.forEach((item) => console.log(item));
 
       /* .map((item) => item.replace('\n', '')); */
 
@@ -287,8 +288,10 @@ export class DataMiningService {
           ruleAfter: splitArray[1] ?? '',
           confidence: splitArray[2] ?? '',
           lift: splitArray[3] ?? '',
+          count: splitArray[4] ?? '',
         };
       });
+
     } catch (error) {
       console.error(`Error in dataMineRule: ${error.message}`);
       throw new Error('Failed to execute data mining rule.');

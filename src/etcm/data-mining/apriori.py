@@ -25,6 +25,25 @@ def convert_to_one_hot(data):
         encoded_data.append(row)
     return pd.DataFrame(encoded_data)
 
+# 统计符合规则的输入出现次数
+def count_rule_occurrences(rules, raw_data):
+    rule_counts = {}
+    for _, rule in rules.iterrows():
+        antecedents = set(rule['antecedents'])
+        consequents = set(rule['consequents'])
+
+        # 初始化计数
+        rule_key = (frozenset(antecedents), frozenset(consequents))
+        rule_counts[rule_key] = 0
+
+        # 遍历原始数据，统计符合条件的事务
+        for transaction in raw_data:
+            transaction_set = set(transaction)
+            if antecedents.issubset(transaction_set) and consequents.issubset(transaction_set):
+                rule_counts[rule_key] += 1
+
+    return rule_counts
+
 # 主函数
 def main():
     try:
@@ -48,15 +67,22 @@ def main():
         # 按提升度排序
         rules = rules.sort_values(by='lift', ascending=False)
 
+        # 统计符合规则的输入出现次数
+        rule_counts = count_rule_occurrences(rules, raw_data)
+
         # 格式化输出结果
         for _, rule in rules.iterrows():
-            antecedents = list(rule['antecedents'])
-            consequents = list(rule['consequents'])
+            antecedents = set(rule['antecedents'])
+            consequents = set(rule['consequents'])
             confidence = rule['confidence']
             lift = rule['lift']
 
+            # 获取该规则的出现次数
+            rule_key = (frozenset(antecedents), frozenset(consequents))
+            occurrence_count = rule_counts.get(rule_key, 0)
+
             # 输出规则为 CSV 格式，方便 NestJS 解析
-            print(f"{'、'.join(antecedents)},{'、'.join(consequents)},{confidence:.2f},{lift:.2f}")
+            print(f"{'、'.join(antecedents)},{'、'.join(consequents)},{confidence:.2f},{lift:.2f},{occurrence_count}")
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)
