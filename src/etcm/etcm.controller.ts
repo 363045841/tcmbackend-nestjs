@@ -25,25 +25,30 @@ export class EtcmController {
   @Get('/mineCount/:name')
   async dataMine(@Param('name') name: string) {
     let countRes: CountInfo[] = await this.dataMiningService.getCount(name); // 拿到组方包含name的药材表
-    let medicineCount = this.dataMiningService.getMedicineCount(countRes);
-    let herbNameList: string[] = medicineCount
-      .map((item) => item.name)
-      .filter((name) => name !== null);
-    let natureCount = await this.dataMiningService.getNatureCount(herbNameList);
-    let tasteCount = await this.dataMiningService.getTasteCount(herbNameList);
-    let functionCount =
-      await this.dataMiningService.getFunctionCount(herbNameList);
+    if (countRes.length === 0) return { count: [] };
+    else {
+      let medicineCount = this.dataMiningService.getMedicineCount(countRes);
+      let herbNameList: string[] = medicineCount
 
-    let symptomsCount = await this.dataMiningService.getSymptopsCount(
-      countRes.map((item) => item.recipe_name ?? ''),
-    );
-    return {
-      count: countRes,
-      natureCount: natureCount,
-      tasteCount: tasteCount,
-      functionCount: functionCount,
-      symptomsCount: symptomsCount,
-    };
+        .map((item) => item.name)
+        .filter((name) => name !== null);
+      let natureCount =
+        await this.dataMiningService.getNatureCount(herbNameList);
+      let tasteCount = await this.dataMiningService.getTasteCount(herbNameList);
+      let functionCount =
+        await this.dataMiningService.getFunctionCount(herbNameList);
+
+      let symptomsCount = await this.dataMiningService.getSymptopsCount(
+        countRes.map((item) => item.recipe_name ?? ''),
+      );
+      return {
+        count: countRes,
+        natureCount: natureCount,
+        tasteCount: tasteCount,
+        functionCount: functionCount,
+        symptomsCount: symptomsCount,
+      };
+    }
   }
 
   @Get('/mineRule/:name')
