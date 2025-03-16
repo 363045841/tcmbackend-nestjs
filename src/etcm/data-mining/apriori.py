@@ -1,11 +1,11 @@
 import sys
 import argparse
-from mlxtend.frequent_patterns import apriori, association_rules
+from mlxtend.frequent_patterns import fpgrowth, association_rules
 import pandas as pd
 
 # 解析命令行参数
 def parse_args():
-    parser = argparse.ArgumentParser(description="Apriori Algorithm for Association Rules")
+    parser = argparse.ArgumentParser(description="FP-Growth Algorithm for Association Rules")
     parser.add_argument('--support', type=float, required=True, help="Minimum support threshold")
     parser.add_argument('--confidence', type=float, required=True, help="Minimum confidence threshold")
     return parser.parse_args()
@@ -16,7 +16,7 @@ def read_input_data():
     data = [line.split(',') for line in lines]
     return data
 
-# 将数据转换为适合 Apriori 算法的格式
+# 将数据转换为适合 FP-Growth 算法的格式
 def convert_to_one_hot(data):
     all_items = set(item for transaction in data for item in transaction)
     encoded_data = []
@@ -58,8 +58,8 @@ def main():
         # 数据预处理：转换为 one-hot 编码
         df = convert_to_one_hot(raw_data)
 
-        # 使用 Apriori 算法找出频繁项集
-        frequent_itemsets = apriori(df, min_support=min_support, use_colnames=True)
+        # 使用 FP-Growth 算法找出频繁项集
+        frequent_itemsets = fpgrowth(df, min_support=min_support, use_colnames=True)
 
         # 生成关联规则
         rules = association_rules(frequent_itemsets, metric="confidence", min_threshold=min_confidence)
