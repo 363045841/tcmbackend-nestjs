@@ -280,12 +280,14 @@ export class DataMiningService {
       // temp.forEach((item) => console.log(item));
 
       /* .map((item) => item.replace('\n', '')); */
-
+      const ruleLen = RuleRes.length;
       return temp.map((item) => {
         let splitArray = item.split(',');
+
         return {
           ruleBefore: splitArray[0] ?? '',
           ruleAfter: splitArray[1] ?? '',
+          support: (Number(splitArray[4]) * 100 / ruleLen).toFixed(2) + '%' || '',
           confidence: splitArray[2] ?? '',
           lift: splitArray[3] ?? '',
           count: splitArray[4] ?? '',
