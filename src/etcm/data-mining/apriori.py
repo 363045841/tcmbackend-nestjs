@@ -2,12 +2,14 @@ import sys
 import argparse
 from mlxtend.frequent_patterns import fpgrowth, association_rules
 import pandas as pd
+from collections import Counter
 
 # 解析命令行参数
 def parse_args():
     parser = argparse.ArgumentParser(description="FP-Growth Algorithm for Association Rules")
     parser.add_argument('--support', type=float, required=True, help="Minimum support threshold")
     parser.add_argument('--confidence', type=float, required=True, help="Minimum confidence threshold")
+    parser.add_argument('--min-frequency', type=int, default=5, help="Minimum frequency for items to be included")
     return parser.parse_args()
 
 # 从标准输入读取数据
@@ -15,6 +17,15 @@ def read_input_data():
     lines = sys.stdin.read().strip().split('\n')
     data = [line.split(',') for line in lines]
     return data
+
+# 过滤低频项目
+def filter_low_frequency_items(data, min_frequency=5):
+    counter = Counter(item for transaction in data for item in transaction)
+    filtered_data = [
+        [item for item in transaction if counter[item] >= min_frequency]
+        for transaction in data
+    ]
+    return filtered_data
 
 # 将数据转换为适合 FP-Growth 算法的格式
 def convert_to_one_hot(data):
@@ -51,9 +62,13 @@ def main():
         args = parse_args()
         min_support = args.support
         min_confidence = args.confidence
+        min_frequency = args.min_frequency
 
         # 读取输入数据
         raw_data = read_input_data()
+
+        # 过滤低频项目
+        raw_data = filter_low_frequency_items(raw_data, min_frequency)
 
         # 数据预处理：转换为 one-hot 编码
         df = convert_to_one_hot(raw_data)
