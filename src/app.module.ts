@@ -22,6 +22,7 @@ import { Comprehensiveherbinfo } from './etcm/entity/etcm.entity';
 import { GuJiFangJi } from './etcm/entity/gujifangji.entity';
 import { ChineseMedicinalHerbs } from './etcm/entity/zhongyaocai.entity';
 import { Fangjixiangxi } from './etcm/entity/fangjixiangxi.entity';
+import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { Fangjixiangxi } from './etcm/entity/fangjixiangxi.entity';
     ItemPageModule,
     AimessageModule,
     EtcmModule,
+    RabbitmqModule,
   ],
   controllers: [AppController],
   providers: [AppService],

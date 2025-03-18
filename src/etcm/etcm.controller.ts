@@ -4,17 +4,16 @@ import {
   CountInfo,
   DataMiningService,
 } from './data-mining/data-mining.service';
-import { count } from 'console';
-import { tasteRes } from './data-mining/data-mining.service';
-import { spawn } from 'child_process';
-import path from 'path';
+import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
 
 @Controller('etcm')
 export class EtcmController {
   constructor(
     private readonly etcmService: EtcmService,
     private readonly dataMiningService: DataMiningService,
+    private readonly rabbitMQService: RabbitMQService,
   ) {}
+
 
   @Get(':name')
   async getByName(@Param('name') name: string) {
@@ -53,7 +52,8 @@ export class EtcmController {
 
   @Get('/mineRule/:name')
   async dataMineRule(@Param('name') name: string) {
-    let rule = await this.dataMiningService.getDataMineRule(name);
+    let rule = await this.dataMiningService.getDataMineRuleByRabbitMQ(name);
+    // let rule = await this.dataMiningService.getDataMineRule(name);
     return rule;
   }
 }

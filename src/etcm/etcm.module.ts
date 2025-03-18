@@ -7,6 +7,8 @@ import { DataMiningService } from './data-mining/data-mining.service';
 import { GuJiFangJi } from './entity/gujifangji.entity';
 import { ChineseMedicinalHerbs } from './entity/zhongyaocai.entity';
 import { Fangjixiangxi } from './entity/fangjixiangxi.entity';
+import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
+import { RabbitmqModule } from 'src/rabbitmq/rabbitmq.module';
 
 @Module({
   imports: [
@@ -14,8 +16,9 @@ import { Fangjixiangxi } from './entity/fangjixiangxi.entity';
       Comprehensiveherbinfo,
       GuJiFangJi,
       ChineseMedicinalHerbs,
-      Fangjixiangxi
+      Fangjixiangxi,
     ]),
+    RabbitmqModule,
   ],
   providers: [EtcmService, DataMiningService],
   controllers: [EtcmController],

@@ -6,6 +6,7 @@ import { GuJiFangJi } from '../entity/gujifangji.entity';
 import { Fangjixiangxi } from '../entity/fangjixiangxi.entity';
 import { spawn } from 'child_process';
 import * as path from 'path';
+import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
 
 export interface CountInfo {
   recipe_name: string | null;
@@ -35,6 +36,8 @@ export class DataMiningService {
     private readonly gujifangjiRepository: Repository<GuJiFangJi>,
     @InjectRepository(Fangjixiangxi)
     private readonly fangjixiangxiRepository: Repository<Fangjixiangxi>,
+
+    private readonly rabbitMQService: RabbitMQService,
   ) {}
 
   async getCount(name: string): Promise<CountInfo[]> {
@@ -287,16 +290,73 @@ export class DataMiningService {
         return {
           ruleBefore: splitArray[0] ?? '',
           ruleAfter: splitArray[1] ?? '',
-          support: (Number(splitArray[4]) * 100 / ruleLen).toFixed(2) + '%' || '',
+          support:
+            ((Number(splitArray[4]) * 100) / ruleLen).toFixed(2) + '%' || '',
           confidence: splitArray[2] ?? '',
           lift: splitArray[3] ?? '',
           count: splitArray[4] ?? '',
         };
       });
-
     } catch (error) {
       console.error(`Error in dataMineRule: ${error.message}`);
       throw new Error('Failed to execute data mining rule.');
+    }
+  }
+
+  async getDataMineRuleByRabbitMQ(
+    name: string,
+    support: number = 0.1,
+    confidence: number = 0.3,
+  ) {
+    try {
+      // 获取规则数据
+      const RuleRes = (await this.getCount(name)).map(
+        (item) => item.prescription_ingredients,
+      );
+  
+      // 构造任务消息
+      const task = {
+        name,
+        support,
+        confidence,
+        data: RuleRes.join('\n'), // 将数据拼接为字符串
+      };
+  
+      console.log('发布参数', task);
+
+      interface RuleResult {
+        pattern: string[],
+        data: Array<{
+            antecedents: string[],
+            consequents: string[],
+            confidence: number,
+            lift: number,
+            occurrence_count: number
+        }>
+      }
+
+
+      // 发布任务到 RabbitMQ 并等待响应
+      const result: RuleResult = await this.rabbitMQService.publishFP_GrowthTask(task);
+      let res = result.data.map((item) => {
+        return {
+          ruleBefore: item.antecedents.join('、'),
+          ruleAfter: item.consequents.join('、'),
+          support: ((item.occurrence_count * 100) / RuleRes.length).toFixed(2) + '%',
+          confidence: String(item.confidence),
+          lift: String(item.lift),
+          count: String(item.occurrence_count),
+        };
+      })
+    
+
+      // console.log('Received result from RabbitMQ:', result);
+  
+      // 返回结果
+      return res;
+    } catch (error) {
+      console.error(`Error in dataMineRule: ${error.message}`);
+      throw new Error('Failed to submit or retrieve data mining task.');
     }
   }
 }
