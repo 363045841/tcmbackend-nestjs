@@ -7,6 +7,7 @@ import { Fangjixiangxi } from '../entity/fangjixiangxi.entity';
 import { spawn } from 'child_process';
 import * as path from 'path';
 import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
+import { ZhongChengYao } from '../entity/ZhongChengYao.entity';
 
 export interface CountInfo {
   recipe_name: string | null;
@@ -36,9 +37,24 @@ export class DataMiningService {
     private readonly gujifangjiRepository: Repository<GuJiFangJi>,
     @InjectRepository(Fangjixiangxi)
     private readonly fangjixiangxiRepository: Repository<Fangjixiangxi>,
+    @InjectRepository(ZhongChengYao)
+    private readonly zhongChengYaoRepository: Repository<ZhongChengYao>,
 
     private readonly rabbitMQService: RabbitMQService,
   ) {}
+
+  async getGuji(name: string) {
+    const result = await this.fangjixiangxiRepository.findOne({
+      where: { name },
+    });
+    return result;
+  }
+
+  async getModern(name: string) {
+    const res = await this.zhongChengYaoRepository.findOne({ where: { name } });
+    return res;
+  }
+
 
   async getCount(name: string): Promise<CountInfo[]> {
     // TODO 后期直接从fangjixiangxi表中查询完整数据

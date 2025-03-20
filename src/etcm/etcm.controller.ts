@@ -20,6 +20,16 @@ export class EtcmController {
     return this.etcmService.getByName(name);
   }
 
+  @Get('/med/guji/:name')
+  async getGuji(@Param('name') name: string) {
+    return this.dataMiningService.getGuji(name);
+  }
+
+  @Get('/med/modern/:name')
+  async getModern(@Param('name') name: string) {
+    return this.dataMiningService.getModern(name);
+  }
+
   // PREF 搜索ETCM数据的时候,可以性能优化,单字调LIKE正常查询,两个字及以上调索引MATCH
   @Get('/mineCount/:name')
   async dataMine(@Param('name') name: string) {

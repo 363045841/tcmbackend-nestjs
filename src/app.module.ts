@@ -23,6 +23,7 @@ import { GuJiFangJi } from './etcm/entity/gujifangji.entity';
 import { ChineseMedicinalHerbs } from './etcm/entity/zhongyaocai.entity';
 import { Fangjixiangxi } from './etcm/entity/fangjixiangxi.entity';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
+import { ZhongChengYao } from './etcm/entity/ZhongChengYao.entity';
 
 @Module({
   imports: [
@@ -78,6 +79,7 @@ import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
             GuJiFangJi,
             ChineseMedicinalHerbs,
             Fangjixiangxi,
+            ZhongChengYao
           ], // 实体类数组
           logging: ['error', 'warn']
         } as TypeOrmModuleOptions;

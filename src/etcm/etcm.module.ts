@@ -9,6 +9,7 @@ import { ChineseMedicinalHerbs } from './entity/zhongyaocai.entity';
 import { Fangjixiangxi } from './entity/fangjixiangxi.entity';
 import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
 import { RabbitmqModule } from 'src/rabbitmq/rabbitmq.module';
+import { ZhongChengYao } from './entity/ZhongChengYao.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { RabbitmqModule } from 'src/rabbitmq/rabbitmq.module';
       GuJiFangJi,
       ChineseMedicinalHerbs,
       Fangjixiangxi,
+      ZhongChengYao
     ]),
     RabbitmqModule,
   ],
