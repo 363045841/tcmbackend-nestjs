@@ -24,6 +24,7 @@ import { ChineseMedicinalHerbs } from './etcm/entity/zhongyaocai.entity';
 import { Fangjixiangxi } from './etcm/entity/fangjixiangxi.entity';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { ZhongChengYao } from './etcm/entity/ZhongChengYao.entity';
+import { ShowAllModule } from './show-all/show-all.module';
 
 @Module({
   imports: [
@@ -92,6 +93,7 @@ import { ZhongChengYao } from './etcm/entity/ZhongChengYao.entity';
     AimessageModule,
     EtcmModule,
     RabbitmqModule,
+    ShowAllModule,
   ],
   controllers: [AppController],
   providers: [AppService],
