@@ -38,12 +38,24 @@ import { ShowAllModule } from './show-all/show-all.module';
           /* const config = dotenv.config({
             path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`),
           }); */
+
+          
           const config: any[] = [
-            dotenv.config({ path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`) }).parsed,
+            (() => {
+              if(process.env.NODE_ENV){
+                return dotenv.config({ path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`) }).parsed;
+              } else {
+                // 默认加载生产环境配置文件
+                // console.log(dotenv.config({ path: path.join(__dirname, `../.env.production`) }).parsed);
+                return dotenv.config({ path: path.join(__dirname, `../.env.production`) }).parsed;
+              }
+
+            })(),
+            // dotenv.config({ path: path.join(__dirname, `../.env.${process.env.NODE_ENV}`) }).parsed,
             dotenv.config({ path: path.join(__dirname, `../.env.global`) }).parsed
           ]
           const mergeConfig = Object.assign({} ,...config);
-          // console.log('开始加载配置文件:', config);
+          console.log('开始加载配置文件:', config);
           return mergeConfig || {}; // 扁平化configservice键值结构
         },
       ],
