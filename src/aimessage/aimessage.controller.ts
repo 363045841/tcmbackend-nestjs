@@ -18,7 +18,15 @@ export class AimessageController {
 
   @Post('chat')
   async chat(@Body() message: MessageInfo) {
-    let temp: string = await this.aimessageService.sendMessage(message);
-    return await this.aimessageService.sendMessage(message);
+    // let temp: string = await this.aimessageService.sendMessage(message);
+    let temp: string = "你脑残"
+    console.log(temp);
+    return {
+        "zhengxing": "脑残症",
+        "tedian": "比较傻逼",
+        "zhiliaofangfa": "切除大脑",
+        "jibing": "脑残病"
+    }
   }
 }
+

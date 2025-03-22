@@ -7,8 +7,8 @@ import { DataMiningService } from './data-mining/data-mining.service';
 import { GuJiFangJi } from './entity/gujifangji.entity';
 import { ChineseMedicinalHerbs } from './entity/zhongyaocai.entity';
 import { Fangjixiangxi } from './entity/fangjixiangxi.entity';
-import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
-import { RabbitmqModule } from 'src/rabbitmq/rabbitmq.module';
+import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
+import { RabbitmqModule } from '../rabbitmq/rabbitmq.module';
 import { ZhongChengYao } from './entity/ZhongChengYao.entity';
 
 @Module({

@@ -6,7 +6,7 @@ import { GuJiFangJi } from '../entity/gujifangji.entity';
 import { Fangjixiangxi } from '../entity/fangjixiangxi.entity';
 import { spawn } from 'child_process';
 import * as path from 'path';
-import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
+import { RabbitMQService } from '../../rabbitmq/rabbitmq.service';
 import { ZhongChengYao } from '../entity/ZhongChengYao.entity';
 
 export interface CountInfo {

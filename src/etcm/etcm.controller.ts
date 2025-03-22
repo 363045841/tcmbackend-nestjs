@@ -4,7 +4,7 @@ import {
   CountInfo,
   DataMiningService,
 } from './data-mining/data-mining.service';
-import { RabbitMQService } from 'src/rabbitmq/rabbitmq.service';
+import { RabbitMQService } from '../rabbitmq/rabbitmq.service';
 
 @Controller('etcm')
 export class EtcmController {
