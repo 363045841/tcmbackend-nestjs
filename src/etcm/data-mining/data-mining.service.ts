@@ -55,7 +55,6 @@ export class DataMiningService {
     return res;
   }
 
-
   async getCount(name: string): Promise<CountInfo[]> {
     // TODO 后期直接从fangjixiangxi表中查询完整数据
     const keyword = name;
@@ -329,7 +328,18 @@ export class DataMiningService {
       const RuleRes = (await this.getCount(name)).map(
         (item) => item.prescription_ingredients,
       );
-  
+      console.log('RuleRes:', RuleRes);
+      if (RuleRes.length === 0) {
+        return [{
+          ruleBefore: 'error',
+          ruleAfter: 'error',
+          support: 'error',
+          confidence: 'error',
+          lift: 'error',
+          count: 'error',
+        }];
+      }
+
       // 构造任务消息
       const task = {
         name,
@@ -337,37 +347,37 @@ export class DataMiningService {
         confidence,
         data: RuleRes.join('\n'), // 将数据拼接为字符串
       };
-  
+
       console.log('发布参数', task);
 
       interface RuleResult {
-        pattern: string[],
+        pattern: string[];
         data: Array<{
-            antecedents: string[],
-            consequents: string[],
-            confidence: number,
-            lift: number,
-            occurrence_count: number
-        }>
+          antecedents: string[];
+          consequents: string[];
+          confidence: number;
+          lift: number;
+          occurrence_count: number;
+        }>;
       }
 
-
       // 发布任务到 RabbitMQ 并等待响应
-      const result: RuleResult = await this.rabbitMQService.publishFP_GrowthTask(task);
+      const result: RuleResult =
+        await this.rabbitMQService.publishFP_GrowthTask(task);
       let res = result.data.map((item) => {
         return {
           ruleBefore: item.antecedents.join('、'),
           ruleAfter: item.consequents.join('、'),
-          support: ((item.occurrence_count * 100) / RuleRes.length).toFixed(2) + '%',
+          support:
+            ((item.occurrence_count * 100) / RuleRes.length).toFixed(2) + '%',
           confidence: String(item.confidence),
           lift: String(item.lift),
           count: String(item.occurrence_count),
         };
-      })
-    
+      });
 
       // console.log('Received result from RabbitMQ:', result);
-  
+
       // 返回结果
       return res;
     } catch (error) {

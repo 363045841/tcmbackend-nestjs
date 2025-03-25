@@ -25,6 +25,7 @@ import { Fangjixiangxi } from './etcm/entity/fangjixiangxi.entity';
 import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { ZhongChengYao } from './etcm/entity/ZhongChengYao.entity';
 import { ShowAllModule } from './show-all/show-all.module';
+import { OssModule } from './oss/oss.module';
 
 @Module({
   imports: [
@@ -106,6 +107,7 @@ import { ShowAllModule } from './show-all/show-all.module';
     EtcmModule,
     RabbitmqModule,
     ShowAllModule,
+    OssModule,
   ],
   controllers: [AppController],
   providers: [AppService],

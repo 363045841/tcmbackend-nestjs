@@ -12,6 +12,4 @@ export class RabbitmqController {
     await this.rabbitMQService.publishFP_GrowthTask(task);
     return 'Task published successfully!';
   }
-
- 
 }
