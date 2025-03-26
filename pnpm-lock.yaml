@@ -19,7 +19,7 @@ importers:
         version: 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.0.12)(@nestjs/platform-express@11.0.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/microservices':
         specifier: ^11.0.12
-        version: 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(amqp-connection-manager@4.1.14(amqplib@0.10.5))(amqplib@0.10.5)(cache-manager@6.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+        version: 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(amqp-connection-manager@4.1.14(amqplib@0.10.5))(amqplib@0.10.5)(cache-manager@6.4.1)(ioredis@5.6.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/platform-express':
         specifier: ^11.0.12
         version: 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)
@@ -28,7 +28,7 @@ importers:
         version: 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)
       '@nestjs/typeorm':
         specifier: ^11.0.0
-        version: 11.0.0(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.21(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2)))
+        version: 11.0.0(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.21(ioredis@5.6.0)(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2)))
       ali-oss:
         specifier: ^6.22.0
         version: 6.22.0
@@ -38,12 +38,6 @@ importers:
       amqplib:
         specifier: ^0.10.5
         version: 0.10.5
-      cache-manager:
-        specifier: ^6.4.1
-        version: 6.4.1
-      cache-manager-redis-store:
-        specifier: ^3.0.1
-        version: 3.0.1
       child_process:
         specifier: ^1.0.2
         version: 1.0.2
@@ -56,15 +50,15 @@ importers:
       fastify:
         specifier: ^5.2.1
         version: 5.2.1
+      ioredis:
+        specifier: ^5.6.0
+        version: 5.6.0
       joi:
         specifier: ^17.13.3
         version: 17.13.3
       mysql2:
         specifier: ^3.14.0
         version: 3.14.0
-      redis:
-        specifier: ^4.7.0
-        version: 4.7.0
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -73,7 +67,7 @@ importers:
         version: 7.8.2
       typeorm:
         specifier: ^0.3.21
-        version: 0.3.21(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2))
+        version: 0.3.21(ioredis@5.6.0)(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2))
       webpack:
         specifier: ^5.98.0
         version: 5.98.0(@swc/core@1.11.13)
@@ -581,6 +575,9 @@ packages:
     peerDependenciesMeta:
       '@types/node':
         optional: true
+
+  '@ioredis/commands@1.2.0':
+    resolution: {integrity: sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -1611,10 +1608,6 @@ packages:
     resolution: {integrity: sha512-/Nf7TyzTx6S3yRJObOAV7956r8cr2+Oj8AC5dt8wSP3BQAoeX58NoHyCU8P8zGkNXStjTSi6fzO6F0pBdcYbEg==}
     engines: {node: '>= 0.8'}
 
-  cache-manager-redis-store@3.0.1:
-    resolution: {integrity: sha512-o560kw+dFqusC9lQJhcm6L2F2fMKobJ5af+FoR2PdnMVdpQ3f3Bz6qzvObTGyvoazQJxjQNWgMQeChP4vRTuXQ==}
-    engines: {node: '>= 16.18.0'}
-
   cache-manager@6.4.1:
     resolution: {integrity: sha512-DVy28v0FbeBp2SmFgKTa4o6muKP3T78Id0nht5D6mBAar1Nuc5z4nL6G0jpnEbYq8FS10dtrBNzQri5l9uJ/zA==}
 
@@ -2457,6 +2450,10 @@ packages:
   inspect-with-kind@1.0.5:
     resolution: {integrity: sha512-MAQUJuIo7Xqk8EVNP+6d3CKq9c80hi4tjIbIAT6lmGW9W6WzlHiu9PS8uSuUYU+Do+j1baiFp3H25XEVxDIG2g==}
 
+  ioredis@5.6.0:
+    resolution: {integrity: sha512-tBZlIIWbndeWBWCXWZiqtOF/yxf6yZX3tAlTJ7nfo5jhd6dctNxF7QnYlZLZ1a0o0pDoen7CgZqO+zjNaFbJAg==}
+    engines: {node: '>=12.22.0'}
+
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
@@ -2807,6 +2804,12 @@ packages:
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
+
+  lodash.defaults@4.2.0:
+    resolution: {integrity: sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ==}
+
+  lodash.isarguments@3.1.0:
+    resolution: {integrity: sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==}
 
   lodash.memoize@4.1.2:
     resolution: {integrity: sha512-t7j+NzmgnQzTAYXcsHYLgimltOV1MXHtlOWf6GjL9Kj8GK5FInw5JotxvbOs+IvV1/Dzo04/fCGfLVs7aXb4Ag==}
@@ -3287,6 +3290,14 @@ packages:
     resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
     engines: {node: '>= 12.13.0'}
 
+  redis-errors@1.2.0:
+    resolution: {integrity: sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w==}
+    engines: {node: '>=4'}
+
+  redis-parser@3.0.0:
+    resolution: {integrity: sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==}
+    engines: {node: '>=4'}
+
   redis@4.7.0:
     resolution: {integrity: sha512-zvmkHEAdGMn+hMRXuMBtu4Vo5P6rHQjLoHftu+lBqq8ZTA3RCVC/WzD790bkKKiNFp7d5/9PcSD19fJyyRvOdQ==}
 
@@ -3527,6 +3538,9 @@ packages:
   stack-utils@2.0.6:
     resolution: {integrity: sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ==}
     engines: {node: '>=10'}
+
+  standard-as-callback@2.1.0:
+    resolution: {integrity: sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A==}
 
   statuses@1.5.0:
     resolution: {integrity: sha512-OpZ3zP+jT1PI7I8nemJX4AKmAX070ZkYPVWV/AaKTJl+tXCTGyVdC1a4SL8RUQYEwk/f34ZX8UTykN68FwrqAA==}
@@ -4538,6 +4552,8 @@ snapshots:
     optionalDependencies:
       '@types/node': 22.13.13
 
+  '@ioredis/commands@1.2.0': {}
+
   '@isaacs/cliui@8.0.2':
     dependencies:
       string-width: 5.1.2
@@ -4749,6 +4765,7 @@ snapshots:
   '@keyv/serialize@1.0.3':
     dependencies:
       buffer: 6.0.3
+    optional: true
 
   '@lukeed/csprng@1.1.0': {}
 
@@ -4878,10 +4895,10 @@ snapshots:
       tslib: 2.8.1
       uid: 2.0.2
     optionalDependencies:
-      '@nestjs/microservices': 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(amqp-connection-manager@4.1.14(amqplib@0.10.5))(amqplib@0.10.5)(cache-manager@6.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/microservices': 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(amqp-connection-manager@4.1.14(amqplib@0.10.5))(amqplib@0.10.5)(cache-manager@6.4.1)(ioredis@5.6.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/platform-express': 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)
 
-  '@nestjs/microservices@11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(amqp-connection-manager@4.1.14(amqplib@0.10.5))(amqplib@0.10.5)(cache-manager@6.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
+  '@nestjs/microservices@11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(amqp-connection-manager@4.1.14(amqplib@0.10.5))(amqplib@0.10.5)(cache-manager@6.4.1)(ioredis@5.6.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)':
     dependencies:
       '@nestjs/common': 11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.0.12)(@nestjs/platform-express@11.0.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)
@@ -4893,6 +4910,7 @@ snapshots:
       amqp-connection-manager: 4.1.14(amqplib@0.10.5)
       amqplib: 0.10.5
       cache-manager: 6.4.1
+      ioredis: 5.6.0
 
   '@nestjs/platform-express@11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)':
     dependencies:
@@ -4947,16 +4965,16 @@ snapshots:
       '@nestjs/core': 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.0.12)(@nestjs/platform-express@11.0.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       tslib: 2.8.1
     optionalDependencies:
-      '@nestjs/microservices': 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(amqp-connection-manager@4.1.14(amqplib@0.10.5))(amqplib@0.10.5)(cache-manager@6.4.1)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/microservices': 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(amqp-connection-manager@4.1.14(amqplib@0.10.5))(amqplib@0.10.5)(cache-manager@6.4.1)(ioredis@5.6.0)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/platform-express': 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)
 
-  '@nestjs/typeorm@11.0.0(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.21(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2)))':
+  '@nestjs/typeorm@11.0.0(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.0.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)(typeorm@0.3.21(ioredis@5.6.0)(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2)))':
     dependencies:
       '@nestjs/common': 11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2)
       '@nestjs/core': 11.0.12(@nestjs/common@11.0.12(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/microservices@11.0.12)(@nestjs/platform-express@11.0.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)
       reflect-metadata: 0.2.2
       rxjs: 7.8.2
-      typeorm: 0.3.21(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2))
+      typeorm: 0.3.21(ioredis@5.6.0)(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2))
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -4982,28 +5000,34 @@ snapshots:
   '@redis/bloom@1.2.0(@redis/client@1.6.0)':
     dependencies:
       '@redis/client': 1.6.0
+    optional: true
 
   '@redis/client@1.6.0':
     dependencies:
       cluster-key-slot: 1.1.2
       generic-pool: 3.9.0
       yallist: 4.0.0
+    optional: true
 
   '@redis/graph@1.1.1(@redis/client@1.6.0)':
     dependencies:
       '@redis/client': 1.6.0
+    optional: true
 
   '@redis/json@1.0.7(@redis/client@1.6.0)':
     dependencies:
       '@redis/client': 1.6.0
+    optional: true
 
   '@redis/search@1.2.0(@redis/client@1.6.0)':
     dependencies:
       '@redis/client': 1.6.0
+    optional: true
 
   '@redis/time-series@1.1.0(@redis/client@1.6.0)':
     dependencies:
       '@redis/client': 1.6.0
+    optional: true
 
   '@sec-ant/readable-stream@0.4.1': {}
 
@@ -5769,13 +5793,10 @@ snapshots:
 
   bytes@3.1.2: {}
 
-  cache-manager-redis-store@3.0.1:
-    dependencies:
-      redis: 4.7.0
-
   cache-manager@6.4.1:
     dependencies:
       keyv: 5.3.2
+    optional: true
 
   cacheable-lookup@7.0.0: {}
 
@@ -6470,7 +6491,8 @@ snapshots:
     dependencies:
       is-property: 1.0.2
 
-  generic-pool@3.9.0: {}
+  generic-pool@3.9.0:
+    optional: true
 
   gensync@1.0.0-beta.2: {}
 
@@ -6645,6 +6667,20 @@ snapshots:
   inspect-with-kind@1.0.5:
     dependencies:
       kind-of: 6.0.3
+
+  ioredis@5.6.0:
+    dependencies:
+      '@ioredis/commands': 1.2.0
+      cluster-key-slot: 1.1.2
+      debug: 4.4.0
+      denque: 2.1.0
+      lodash.defaults: 4.2.0
+      lodash.isarguments: 3.1.0
+      redis-errors: 1.2.0
+      redis-parser: 3.0.0
+      standard-as-callback: 2.1.0
+    transitivePeerDependencies:
+      - supports-color
 
   ipaddr.js@1.9.1: {}
 
@@ -7133,6 +7169,7 @@ snapshots:
   keyv@5.3.2:
     dependencies:
       '@keyv/serialize': 1.0.3
+    optional: true
 
   kind-of@6.0.3: {}
 
@@ -7162,6 +7199,10 @@ snapshots:
   locate-path@6.0.0:
     dependencies:
       p-locate: 5.0.0
+
+  lodash.defaults@4.2.0: {}
+
+  lodash.isarguments@3.1.0: {}
 
   lodash.memoize@4.1.2: {}
 
@@ -7592,6 +7633,12 @@ snapshots:
 
   real-require@0.2.0: {}
 
+  redis-errors@1.2.0: {}
+
+  redis-parser@3.0.0:
+    dependencies:
+      redis-errors: 1.2.0
+
   redis@4.7.0:
     dependencies:
       '@redis/bloom': 1.2.0(@redis/client@1.6.0)
@@ -7600,6 +7647,7 @@ snapshots:
       '@redis/json': 1.0.7(@redis/client@1.6.0)
       '@redis/search': 1.2.0(@redis/client@1.6.0)
       '@redis/time-series': 1.1.0(@redis/client@1.6.0)
+    optional: true
 
   reflect-metadata@0.2.2: {}
 
@@ -7831,6 +7879,8 @@ snapshots:
   stack-utils@2.0.6:
     dependencies:
       escape-string-regexp: 2.0.0
+
+  standard-as-callback@2.1.0: {}
 
   statuses@1.5.0: {}
 
@@ -8099,7 +8149,7 @@ snapshots:
 
   typedarray@0.0.6: {}
 
-  typeorm@0.3.21(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2)):
+  typeorm@0.3.21(ioredis@5.6.0)(mysql2@3.14.0)(redis@4.7.0)(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2)):
     dependencies:
       '@sqltools/formatter': 1.2.5
       ansis: 3.17.0
@@ -8116,6 +8166,7 @@ snapshots:
       uuid: 11.1.0
       yargs: 17.7.2
     optionalDependencies:
+      ioredis: 5.6.0
       mysql2: 3.14.0
       redis: 4.7.0
       ts-node: 10.9.2(@swc/core@1.11.13)(@types/node@22.13.13)(typescript@5.8.2)
@@ -8306,7 +8357,8 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yallist@4.0.0: {}
+  yallist@4.0.0:
+    optional: true
 
   yargs-parser@21.1.1: {}
 

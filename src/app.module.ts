@@ -26,6 +26,7 @@ import { RabbitmqModule } from './rabbitmq/rabbitmq.module';
 import { ZhongChengYao } from './etcm/entity/ZhongChengYao.entity';
 import { ShowAllModule } from './show-all/show-all.module';
 import { OssModule } from './oss/oss.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -108,8 +109,10 @@ import { OssModule } from './oss/oss.module';
     RabbitmqModule,
     ShowAllModule,
     OssModule,
+    RedisModule,
   ],
   controllers: [AppController],
+
   providers: [AppService],
 })
 export class AppModule {}

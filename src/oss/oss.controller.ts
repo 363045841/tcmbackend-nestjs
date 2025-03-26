@@ -1,4 +1,3 @@
-// oss.controller.ts
 import {
   Controller,
   Get,
@@ -6,7 +5,9 @@ import {
   HttpException,
   HttpStatus,
   Query,
+  Res,
 } from '@nestjs/common';
+import { FastifyReply } from 'fastify'; // 导入 Fastify 的 FastifyReply 类型
 import { OssService } from './oss.service';
 
 @Controller('oss')
@@ -14,25 +15,20 @@ export class OssController {
   constructor(private readonly ossService: OssService) {}
 
   /**
-   * 获取图片的签名 URL
-   * @param filePath 图片路径，例如 'zyysjk/example.jpg'
-   * @returns 签名 URL
-   */
-  @Get('get-signed-url')
-  async getSignedUrl(@Query('filePath') filePath: string): Promise<string> {
-    return this.ossService.getSignedUrl(filePath);
-  }
-
-  /**
    * 直接返回图片数据
    * @param filePath 图片路径，例如 'zyysjk/example.jpg'
    * @returns 图片二进制流
    */
   @Get('get-image')
-  @Header('Content-Type', 'image/jpeg') // 使用 @Header 装饰器设置响应头
-  async getImage(@Query('filePath') filePath: string): Promise<Buffer> {
+  async getImage(@Query('filePath') filePath: string, @Res() res: FastifyReply): Promise<void> {
     try {
-      return await this.ossService.getImage(filePath); // 返回图片的二进制数据
+      const imageBuffer = await this.ossService.getImage(filePath); // 获取图片的二进制数据
+
+      // 设置响应头为图片类型
+      res.type('image/jpeg'); // 确保设置为 image/jpeg
+
+      // 返回图片的二进制数据
+      res.send(imageBuffer); // 将缓存或从 OSS 获取的图片返回
     } catch (error) {
       throw new HttpException(
         'Failed to fetch image',

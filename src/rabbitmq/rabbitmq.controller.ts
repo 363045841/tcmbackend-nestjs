@@ -1,7 +1,6 @@
 // app.controller.ts
 import { Controller, Post, Body } from '@nestjs/common';
 import { RabbitMQService } from './rabbitmq.service';
-import { MessagePattern } from '@nestjs/microservices';
 
 @Controller('tasks')
 export class RabbitmqController {
