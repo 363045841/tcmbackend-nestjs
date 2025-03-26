@@ -20,9 +20,15 @@ export class OssController {
    * @returns 图片二进制流
    */
   @Get('get-image')
-  async getImage(@Query('filePath') filePath: string, @Res() res: FastifyReply): Promise<void> {
+  async getImage(
+    @Query('filePath') filePath: string,
+    @Res() res: FastifyReply,
+  ): Promise<void> {
     try {
       const imageBuffer = await this.ossService.getImage(filePath); // 获取图片的二进制数据
+      if (imageBuffer === null) {
+        res.status(404).send('Image not found'); // 如果图片不存在，返回404错误信息
+      }
 
       // 设置响应头为图片类型
       res.type('image/jpeg'); // 确保设置为 image/jpeg
