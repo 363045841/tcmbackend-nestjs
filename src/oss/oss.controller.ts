@@ -27,7 +27,7 @@ export class OssController {
     try {
       const imageBuffer = await this.ossService.getImage(filePath); // 获取图片的二进制数据
       if (imageBuffer === null) {
-        res.status(404).send('Image not found'); // 如果图片不存在，返回404错误信息
+        res.send('Image not found'); // 如果图片不存在，返回404错误信息，先这样不带状态码，否则nginx拦截转502
       }
 
       // 设置响应头为图片类型

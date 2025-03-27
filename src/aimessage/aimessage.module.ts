@@ -5,11 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Messages } from './messages.entity';
 import { Conversations } from './conversations.entity';
 import { LoggingMiddleware } from '../logging/logging.middleware'; // 导入日志中间件
+import { StreamService } from './stream/stream.service';
+import { ChatGateway } from './chat.gateway';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Messages, Conversations])],
   controllers: [AimessageController],
-  providers: [AimessageService],
+  providers: [AimessageService, StreamService, ChatGateway],
 })
 export class AimessageModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
