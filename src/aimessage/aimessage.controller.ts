@@ -28,7 +28,7 @@ export class AimessageController {
       };
     } else {
       // 流式传输，通知 WebSocket 网关启动流式传输
-      this.chatGateway.startStream(message.message);
+      this.chatGateway.startStream(message.message, message.conversation_id);
       return { message: 'WebSocket 流式传输已启动' };
     }
   }
