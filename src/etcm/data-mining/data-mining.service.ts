@@ -330,14 +330,16 @@ export class DataMiningService {
       );
       console.log('RuleRes:', RuleRes);
       if (RuleRes.length === 0) {
-        return [{
-          ruleBefore: 'error',
-          ruleAfter: 'error',
-          support: 'error',
-          confidence: 'error',
-          lift: 'error',
-          count: 'error',
-        }];
+        return [
+          {
+            ruleBefore: 'error',
+            ruleAfter: 'error',
+            support: 'error',
+            confidence: 'error',
+            lift: 'error',
+            count: 'error',
+          },
+        ];
       }
 
       // 构造任务消息
@@ -348,9 +350,10 @@ export class DataMiningService {
         data: RuleRes.join('\n'), // 将数据拼接为字符串
       };
 
-      console.log('发布参数', task);
+      console.log('发布参数', task.name, task.support, task.confidence);
 
       interface RuleResult {
+
         pattern: string[];
         data: Array<{
           antecedents: string[];

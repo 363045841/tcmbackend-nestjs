@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { EtcmService } from './etcm.service';
 import {
   CountInfo,
@@ -13,7 +13,6 @@ export class EtcmController {
     private readonly dataMiningService: DataMiningService,
     private readonly rabbitMQService: RabbitMQService,
   ) {}
-
 
   @Get(':name')
   async getByName(@Param('name') name: string) {
@@ -61,8 +60,12 @@ export class EtcmController {
   }
 
   @Get('/mineRule/:name')
-  async dataMineRule(@Param('name') name: string) {
-    let rule = await this.dataMiningService.getDataMineRuleByRabbitMQ(name);
+  async dataMineRule(
+    @Param('name') name: string,
+    @Query('confident') confident?: number, // 可选参数
+    @Query('support') support?: number,
+  ) {
+    let rule = await this.dataMiningService.getDataMineRuleByRabbitMQ(name,confident,support);
     // let rule = await this.dataMiningService.getDataMineRule(name);
     return rule;
   }
