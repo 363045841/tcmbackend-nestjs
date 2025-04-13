@@ -9,16 +9,17 @@ export class StreamService {
     sendChunk: (chunk: string) => void,
   ): Promise<void> {
     const myHeaders = new Headers();
+    // 'Bearer bce-v3/ALTAK-Sp9uueSHlp7LvWFuilu6Y/1eb712fdbe3c6e017413c13170738f264a5d2817',
     myHeaders.append(
       'X-Appbuilder-Authorization',
-      'Bearer bce-v3/ALTAK-Sp9uueSHlp7LvWFuilu6Y/1eb712fdbe3c6e017413c13170738f264a5d2817',
+      `Bearer ${process.env.API_KEY}`,
     );
     myHeaders.append('Content-Type', 'application/json');
 
     const raw = JSON.stringify({
-      app_id: 'eb6bc01f-00ac-4c82-9c1a-53fd3322f5d2',
+      app_id: process.env.APP_ID,
       query: query,
-      conversation_id: 'fc5fcfc4-be7d-43bd-b185-e182751eec5a',
+      conversation_id: conversation_id,
       stream: true,
     });
 
@@ -72,17 +73,17 @@ export class StreamService {
             if (done) {
               let matches = [...tempPkg.matchAll(/data:/g)];
               try {
-                let ans = JSON.parse(tempPkg.slice(matches[matches.length - 1].index + 5));
+                let ans = JSON.parse(
+                  tempPkg.slice(matches[matches.length - 1].index + 5),
+                );
                 sendChunk(ans.response); // 单块的完整数据包，直接推给前端
                 console.log(ans.response)
-                
               } catch {
                 console.error('解析失败', tempPkg);
               }
-              sendChunk(JSON.stringify({"is_completion": true,"answer":""}))
+              sendChunk(JSON.stringify({ is_completion: true, answer: '' }));
               console.log('流式传输结束');
               return;
-
             }
 
             const chunk = decoder.decode(value, { stream: true });
@@ -97,8 +98,8 @@ export class StreamService {
                   matches[length - 1].index,
                 );
                 try {
-                  let ans = JSON.parse(data);
-                  // console.log('解析成功', 0, ans, data);
+                  /* let ans = JSON.parse(data);
+                  console.log('解析成功', 0, ans, data); */
                   sendChunk(data); // 单块的完整数据包，直接推给前端
                 } catch (error) {
                   console.error('解析失败', tempPkg);
