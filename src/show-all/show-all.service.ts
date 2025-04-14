@@ -31,7 +31,7 @@ export class ShowAllService {
       .map((item) => ({
         tcmName: item.tcmName!, // 使用非空断言操作符，确保 tcmName 不为 null
         id: item.id,
-        pic: `http://${process.env.SERVER_IP}/api/v1/oss/get-image?filePath=zyysjk/downloaded_images/${item.id}.jpg`,
+        pic: `https://${process.env.SERVER_IP}/api/v1/oss/get-image?filePath=zyysjk/downloaded_images/${item.id}.jpg`,
       }));
 
     return mappedResults;
