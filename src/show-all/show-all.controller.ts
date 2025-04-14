@@ -5,9 +5,6 @@ export class ShowAllController {
   constructor(private readonly ShowAllService: ShowAllService) {}
 
   @Get() showAll(@Query('begin') begin: number, @Query('end') end: number) {
-    console.log(begin, end);
     return this.ShowAllService.getMedinfoData(begin, end);
   }
-
-
 }
