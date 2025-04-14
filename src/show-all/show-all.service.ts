@@ -14,7 +14,7 @@ export class ShowAllService {
     // 使用TypeORM的find方法结合skip和take实现分页查询
     // skip表示跳过的记录数，即(begin-1)，因为通常行号从1开始而skip从0开始计数
     // take表示要获取的记录数，即(end-begin+1)
-    type ReturnedType = { tcmName: string; pic: string };
+    type ReturnedType = { tcmName: string; pic: string; id: number };
 
     let results = await this.medinfoRepository.find({
       skip: begin - 1, // 调整以匹配通常从1开始的行号
@@ -27,11 +27,12 @@ export class ShowAllService {
     }
 
     const mappedResults: ReturnedType[] = results
-    .filter((item) => item.tcmName !== null) // 过滤掉 tcmName 为 null 的记录
-    .map((item) => ({
-      tcmName: item.tcmName!, // 使用非空断言操作符，确保 tcmName 不为 null
-      pic: `http://${process.env.SERVER_IP}/api/v1/oss/get-image?filePath=zyysjk/downloaded_images/${item.id}.jpg`,
-    }));
+      .filter((item) => item.tcmName !== null) // 过滤掉 tcmName 为 null 的记录
+      .map((item) => ({
+        tcmName: item.tcmName!, // 使用非空断言操作符，确保 tcmName 不为 null
+        id: item.id,
+        pic: `http://${process.env.SERVER_IP}/api/v1/oss/get-image?filePath=zyysjk/downloaded_images/${item.id}.jpg`,
+      }));
 
     return mappedResults;
   }
