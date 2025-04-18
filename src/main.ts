@@ -1,28 +1,36 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { FastifyAdapter } from "@nestjs/platform-fastify";
+import * as fastifyCors from '@fastify/cors';
+import { INestApplication } from '@nestjs/common';
 
 declare const module: any;
 
 async function bootstrap() {
-  process.on('unhandledRejection', (reason, promise) => {
-    console.error('未处理的 Promise 拒绝:', reason);
-    console.error('相关 Promise:', promise);
+  // 创建一个 FastifyAdapter 实例
+  const fastifyAdapter = new FastifyAdapter();
 
-    // 如果需要，可以在这里记录日志、发送报警等
+  // 在 FastifyAdapter 上注册 fastifyCors 插件，允许所有来源跨域
+  fastifyAdapter.register(fastifyCors, {
+    origin: true,  // 允许所有来源
+    methods: ['GET', 'POST', 'OPTIONS'],  // 允许的 HTTP 方法
+    allowedHeaders: ['Content-Type'],  // 允许的请求头部
   });
-  const app = await NestFactory.create(AppModule, new FastifyAdapter());
-  app.setGlobalPrefix("api/v1");
-  app.enableCors();
-  await app.listen(process.env.PORT ?? 3001, '0.0.0.0');
 
+  // 使用 FastifyAdapter 创建应用
+  const app: INestApplication = await NestFactory.create(AppModule, fastifyAdapter);
+
+  app.setGlobalPrefix("api/v1");
+
+  // 启动应用
+  await app.listen(process.env.PORT ?? 3001, '0.0.0.0');
   console.log(`Server is running on port ${process.env.PORT ?? 3001}`);
 
+  // 热重载处理
   if (module.hot) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     module.hot.accept();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     module.hot.dispose(() => app.close());
   }
 }
+
 bootstrap();

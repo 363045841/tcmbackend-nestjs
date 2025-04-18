@@ -34,8 +34,11 @@ export class StreamService {
     let sendPkgNum = 0;
 
     try {
+      console.log('请求参数', requestOptions);
       const response = await fetch(
         'https://qianfan.baidubce.com/v2/app/conversation/runs',
+
+
         requestOptions,
       );
 
