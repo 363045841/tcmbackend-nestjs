@@ -9,7 +9,7 @@ export class RedisService {
     this.redis = new Redis({
       host: '127.0.0.1', // Redis 服务器地址
       port: 6379,        // Redis 端口
-      password: 'password', // Redis 密码（如果有）
+      password: process.env.REDIS_PASSPORT, // Redis 密码（如果有）
       // 其他配置项
     });
   }

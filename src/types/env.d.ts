@@ -16,5 +16,6 @@ declare namespace NodeJS {
      * 服务器的 IP 地址。
      */
     SERVER_IP: string;
+    REDIS_PASSPORT: string;
   }
 }
