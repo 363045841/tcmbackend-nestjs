@@ -27,6 +27,9 @@ import { ZhongChengYao } from './etcm/entity/ZhongChengYao.entity';
 import { ShowAllModule } from './show-all/show-all.module';
 import { OssModule } from './oss/oss.module';
 import { RedisModule } from './redis/redis.module';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { Users } from './user/user.entity';
 
 @Module({
   imports: [
@@ -94,7 +97,8 @@ import { RedisModule } from './redis/redis.module';
             GuJiFangJi,
             ChineseMedicinalHerbs,
             Fangjixiangxi,
-            ZhongChengYao
+            ZhongChengYao,
+            Users
           ], // 实体类数组
           logging: ['error', 'warn']
         } as TypeOrmModuleOptions;
@@ -110,6 +114,8 @@ import { RedisModule } from './redis/redis.module';
     ShowAllModule,
     OssModule,
     RedisModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
 
