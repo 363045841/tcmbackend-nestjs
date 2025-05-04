@@ -18,10 +18,10 @@ export class UserService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<Users> {
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const hashedPassword = await bcrypt.hash(createUserDto.password, 10); // 哈希加密,盐值为10
     const newUser = this.usersRepository.create({
       ...createUserDto,
-      password: hashedPassword,
+      password: hashedPassword, // 覆写加密后的password
     });
     return this.usersRepository.save(newUser);
   }
